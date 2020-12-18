@@ -1,0 +1,3926 @@
+ctjsVersion: 1.5.0
+notes: /* empty */
+libs:
+  place:
+    gridX: 1024
+    gridY: 1024
+  fittoscreen:
+    mode: scaleFit
+  mouse: {}
+  keyboard.polyfill: {}
+  sound.howler: {}
+  keyboard: {}
+textures:
+  - name: static
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 48
+      - 94
+    marginx: 0
+    marginy: 0
+    imgWidth: 96
+    imgHeight: 96
+    width: 96
+    height: 96
+    offx: 0
+    offy: 0
+    origname: i4756c0a3-43f0-4437-9376-19bc2f8298e9.png
+    shape: rect
+    left: 36
+    right: 34
+    top: 66
+    bottom: 0
+    uid: 4756c0a3-43f0-4437-9376-19bc2f8298e9
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Characters/platformChar_idle.png
+    lastmod: 1598934141117
+  - name: walk1
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 48
+      - 96
+    marginx: 0
+    marginy: 0
+    imgWidth: 96
+    imgHeight: 96
+    width: 96
+    height: 96
+    offx: 0
+    offy: 0
+    origname: i69059f57-57cc-43b3-b318-a34f9d6405a5.png
+    shape: rect
+    left: 39
+    right: 39
+    top: 68
+    bottom: 0
+    uid: 69059f57-57cc-43b3-b318-a34f9d6405a5
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Characters/platformChar_walk1.png
+    lastmod: 1598938472940
+  - name: walk2
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 48
+      - 95.5
+    marginx: 0
+    marginy: 0
+    imgWidth: 96
+    imgHeight: 96
+    width: 96
+    height: 96
+    offx: 0
+    offy: 0
+    origname: i01349154-6677-410a-9f53-e5e8bad6226f.png
+    shape: rect
+    left: 48
+    right: 48
+    top: 96
+    bottom: 0
+    uid: 01349154-6677-410a-9f53-e5e8bad6226f
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Characters/platformChar_walk2.png
+    tiled: false
+    lastmod: 1598938463566
+  - name: platformPack_item001
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i58170b9b-f2fb-4161-b756-466ec7ca6d3e.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 58170b9b-f2fb-4161-b756-466ec7ca6d3e
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item001.png
+  - name: platformPack_item002
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ib609c550-cf4e-42be-8146-6c9c5552093a.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: b609c550-cf4e-42be-8146-6c9c5552093a
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item002.png
+  - name: platformPack_item003
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i2e34e071-0521-422e-bc09-debfcae693bd.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 2e34e071-0521-422e-bc09-debfcae693bd
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item003.png
+  - name: platformPack_item006
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i893d360e-2acf-4d3c-8a70-156e3d07b548.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 893d360e-2acf-4d3c-8a70-156e3d07b548
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item006.png
+  - name: platformPack_item005
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i024bd4c4-d5e3-440e-a456-09e2db3232cb.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 024bd4c4-d5e3-440e-a456-09e2db3232cb
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item005.png
+  - name: platformPack_item004
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i823fbcb6-80fc-43e5-82bd-27ba6d92ab28.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 823fbcb6-80fc-43e5-82bd-27ba6d92ab28
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item004.png
+  - name: platformPack_item007
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i7f0d9ba7-6502-4390-b3ae-9981156d6b0a.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 7f0d9ba7-6502-4390-b3ae-9981156d6b0a
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item007.png
+  - name: platformPack_item008
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i99c2621e-9621-4f6d-b7ad-0a892733067c.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 99c2621e-9621-4f6d-b7ad-0a892733067c
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item008.png
+  - name: platformPack_item009
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 32
+      - 30
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: iaab4f4de-007d-4539-a0ed-b205f957a33d.png
+    shape: circle
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: aab4f4de-007d-4539-a0ed-b205f957a33d
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item009.png
+    r: 14
+    lastmod: 1598930901811
+  - name: platformPack_item010
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i2d6ff9d2-7052-49ef-97d4-83bd2e10315b.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 2d6ff9d2-7052-49ef-97d4-83bd2e10315b
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item010.png
+  - name: platformPack_item011
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ib34ec9bc-36dd-475a-a2f8-62fe68c0189a.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: b34ec9bc-36dd-475a-a2f8-62fe68c0189a
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item011.png
+    ignoreTiledUse: true
+  - name: platformPack_item012
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i943596fe-0876-4d72-b54b-44f6e2f49b65.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 943596fe-0876-4d72-b54b-44f6e2f49b65
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item012.png
+  - name: platformPack_item014
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ib1437109-cb92-499c-ac04-75f0ad75f490.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: b1437109-cb92-499c-ac04-75f0ad75f490
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item014.png
+  - name: platformPack_item013
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i2952b0f9-e0ae-40e0-b37b-bf53990c962f.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 2952b0f9-e0ae-40e0-b37b-bf53990c962f
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item013.png
+  - name: platformPack_item016
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i9dcb352e-01e3-46a9-af3b-958628450d3d.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 9dcb352e-01e3-46a9-af3b-958628450d3d
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item016.png
+  - name: platformPack_item017
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 32
+      - 32
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i3f6e62d1-87fd-4f2f-a721-1a035b5b9bd3.png
+    shape: circle
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 3f6e62d1-87fd-4f2f-a721-1a035b5b9bd3
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item017.png
+    r: 18
+    lastmod: 1598931062493
+  - name: platformPack_item015
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i2dd99aa8-2203-46cf-a24b-70d962340756.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 2dd99aa8-2203-46cf-a24b-70d962340756
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item015.png
+  - name: platformPack_item018
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ic9adf45b-79c3-479b-b8dc-a270cc662433.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: c9adf45b-79c3-479b-b8dc-a270cc662433
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Items/platformPack_item018.png
+  - name: platformPack_tile001
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ib58d49ea-5be7-4348-a261-1a8a22786744.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: b58d49ea-5be7-4348-a261-1a8a22786744
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile001.png
+  - name: platformPack_tile002
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: iab27953b-c64e-4f03-a7f0-88d52cb7d5f6.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: ab27953b-c64e-4f03-a7f0-88d52cb7d5f6
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile002.png
+  - name: platformPack_tile003
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i03484220-b928-479b-9c4e-92241e4e0f54.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 03484220-b928-479b-9c4e-92241e4e0f54
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile003.png
+  - name: platformPack_tile005
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i167a1210-e2b2-47a0-b7d4-5d9662df97f6.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 167a1210-e2b2-47a0-b7d4-5d9662df97f6
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile005.png
+  - name: platformPack_tile004
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i593e43ed-9a1d-441f-a5f2-ab2dad032326.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 593e43ed-9a1d-441f-a5f2-ab2dad032326
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile004.png
+    tiled: true
+  - name: platformPack_tile006
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i9545bbd9-c9ce-4e13-be3e-985bd2a10111.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 9545bbd9-c9ce-4e13-be3e-985bd2a10111
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile006.png
+  - name: platformPack_tile008
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i76825c64-aad8-4cd5-ad57-a4e6f715a5ec.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 76825c64-aad8-4cd5-ad57-a4e6f715a5ec
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile008.png
+  - name: platformPack_tile009
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: id9dfe123-1ab3-4b4b-a1d5-362d5fd300be.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: d9dfe123-1ab3-4b4b-a1d5-362d5fd300be
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile009.png
+  - name: platformPack_tile010
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i4619ed59-1afd-4334-8a3d-4a41f9bb7f50.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 4619ed59-1afd-4334-8a3d-4a41f9bb7f50
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile010.png
+  - name: platformPack_tile012
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ia6890b96-871d-48ea-baf1-f3f656ae5624.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: a6890b96-871d-48ea-baf1-f3f656ae5624
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile012.png
+  - name: platformPack_tile007
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i02f10222-4894-4d77-92fe-d2a6a5e16161.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 02f10222-4894-4d77-92fe-d2a6a5e16161
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile007.png
+  - name: platformPack_tile014
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i4a0f9347-9127-400c-aedc-f01494e9b804.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 4a0f9347-9127-400c-aedc-f01494e9b804
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile014.png
+  - name: platformPack_tile013
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i45d91506-3684-4261-9636-d285b200330a.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 45d91506-3684-4261-9636-d285b200330a
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile013.png
+  - name: platformPack_tile015
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ia535ad6b-3fb5-433a-a597-9f6cf50fc363.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: a535ad6b-3fb5-433a-a597-9f6cf50fc363
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile015.png
+  - name: platformPack_tile016
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ibc5d5337-59e3-46de-83e6-f6e8a86b1318.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: bc5d5337-59e3-46de-83e6-f6e8a86b1318
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile016.png
+    tiled: true
+  - name: platformPack_tile011
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i24269c7e-5cb9-43b1-9b40-e06c2459cf74.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 24269c7e-5cb9-43b1-9b40-e06c2459cf74
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile011.png
+  - name: platformPack_tile017
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ide0e8652-2e6d-49c0-b501-a013286c4528.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: de0e8652-2e6d-49c0-b501-a013286c4528
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile017.png
+    tiled: true
+    lastmod: 1598931431615
+  - name: platformPack_tile018
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i0a28b9af-d6e5-43db-ab8a-644893283b30.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 0a28b9af-d6e5-43db-ab8a-644893283b30
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile018.png
+  - name: platformPack_tile019
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i12c371c7-14f3-4246-9503-9064c3b042ed.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 12c371c7-14f3-4246-9503-9064c3b042ed
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile019.png
+  - name: checkout
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: iafbedb2e-3d24-46c2-9329-f80db77da216.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: afbedb2e-3d24-46c2-9329-f80db77da216
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile021.png
+    lastmod: 1598935824078
+  - name: platformPack_tile020
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ib16dedda-3026-42c1-9c32-5b4364e37c7e.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: b16dedda-3026-42c1-9c32-5b4364e37c7e
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile020.png
+  - name: platformPack_tile022
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i6b333db0-f613-48aa-a42a-c10b477a440c.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 6b333db0-f613-48aa-a42a-c10b477a440c
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile022.png
+  - name: platformPack_tile024
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i02601ed4-e334-4354-88bb-34027aa7c164.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 02601ed4-e334-4354-88bb-34027aa7c164
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile024.png
+  - name: platformPack_tile026
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i30b428b2-1fbc-4d3e-bbe4-20065f55a19f.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 30b428b2-1fbc-4d3e-bbe4-20065f55a19f
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile026.png
+  - name: platformPack_tile023
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ie3221afd-7d71-444d-86e0-d2f2666ecd6c.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: e3221afd-7d71-444d-86e0-d2f2666ecd6c
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile023.png
+  - name: platformPack_tile027
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i86c70854-c7e2-4751-a49c-d030067bc882.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 86c70854-c7e2-4751-a49c-d030067bc882
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile027.png
+  - name: platformPack_tile025
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i11bc41eb-6608-4fd8-953b-622d29ce9a9b.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 11bc41eb-6608-4fd8-953b-622d29ce9a9b
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile025.png
+  - name: platformPack_tile028
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: iae6f0941-aa43-4663-9a7f-943b1ba63f0d.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: ae6f0941-aa43-4663-9a7f-943b1ba63f0d
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile028.png
+  - name: platformPack_tile031
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i2429b4c2-1b3b-4160-b344-d426ff961c93.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 2429b4c2-1b3b-4160-b344-d426ff961c93
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile031.png
+  - name: platformPack_tile029
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ibdbba292-4ea4-41ec-9df9-cbff3345e86d.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: bdbba292-4ea4-41ec-9df9-cbff3345e86d
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile029.png
+  - name: platformPack_tile030
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ifc120cb1-6020-4fcc-9972-731269f39b31.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: fc120cb1-6020-4fcc-9972-731269f39b31
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile030.png
+  - name: platformPack_tile033
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i13b11f7a-24cd-4571-9fa7-9b2a91e4a8bf.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 13b11f7a-24cd-4571-9fa7-9b2a91e4a8bf
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile033.png
+  - name: platformPack_tile032
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i4407234f-c959-4fbc-915c-2d7cbc67172b.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 4407234f-c959-4fbc-915c-2d7cbc67172b
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile032.png
+  - name: platformPack_tile034
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: iaf10fefa-842d-4e9b-bcda-5f76726cf32a.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: af10fefa-842d-4e9b-bcda-5f76726cf32a
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile034.png
+  - name: platformPack_tile035
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: iaa5042bf-d109-420e-a620-5be777212a00.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: aa5042bf-d109-420e-a620-5be777212a00
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile035.png
+  - name: platformPack_tile036
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: if4252c7e-f3fb-4dd0-8cf8-10a4af48ad28.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: f4252c7e-f3fb-4dd0-8cf8-10a4af48ad28
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile036.png
+  - name: platformPack_tile038
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i356830c1-5a9b-44d5-91d9-3133b0bd6f6e.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 356830c1-5a9b-44d5-91d9-3133b0bd6f6e
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile038.png
+  - name: platformPack_tile039
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i2ea2ce8c-3424-4bc6-b4ea-6fcf30a3cab3.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 2ea2ce8c-3424-4bc6-b4ea-6fcf30a3cab3
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile039.png
+  - name: platformPack_tile037
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i4d5c7fdd-97b9-4cc6-b6b7-f2e43e3f76cb.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 4d5c7fdd-97b9-4cc6-b6b7-f2e43e3f76cb
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile037.png
+  - name: platformPack_tile040
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ib2e317bd-28bf-49c8-8efd-816efc6f51c0.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: b2e317bd-28bf-49c8-8efd-816efc6f51c0
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile040.png
+    tiled: true
+  - name: platformPack_tile042
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ia32d009e-8b81-4dd5-968b-76cd06aedf48.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: a32d009e-8b81-4dd5-968b-76cd06aedf48
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile042.png
+  - name: platformPack_tile044
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i627b0e2c-5cd6-471c-a4d8-09acab9062f4.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 627b0e2c-5cd6-471c-a4d8-09acab9062f4
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile044.png
+  - name: platformPack_tile041
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i6eca4c2f-6d13-41b1-bd20-ff82b1695a11.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 6eca4c2f-6d13-41b1-bd20-ff82b1695a11
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile041.png
+  - name: platformPack_tile047
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i3f19ef41-914f-4584-a3e1-3567b1f7cb3a.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 3f19ef41-914f-4584-a3e1-3567b1f7cb3a
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile047.png
+  - name: platformPack_tile051
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ibc247c0f-5bb8-4e8b-8f76-277109ed9cc4.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: bc247c0f-5bb8-4e8b-8f76-277109ed9cc4
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile051.png
+    lastmod: 1608314643283
+  - name: platformPack_tile046
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i09f64219-a7d8-4f27-b862-fcbe4edfd604.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 09f64219-a7d8-4f27-b862-fcbe4edfd604
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile046.png
+  - name: platformPack_tile045
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i6c4d9fbb-6341-45a8-9a1a-cf453c838493.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 6c4d9fbb-6341-45a8-9a1a-cf453c838493
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile045.png
+  - name: platformPack_tile048
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ic73e8cf8-260d-4e76-af56-7d7816d1a556.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: c73e8cf8-260d-4e76-af56-7d7816d1a556
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile048.png
+  - name: platformPack_tile049
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: if46a8855-4bcf-41a5-b32a-2fce7019d00b.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: f46a8855-4bcf-41a5-b32a-2fce7019d00b
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile049.png
+  - name: platformPack_tile053
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: if2d15380-1899-4c78-8c73-6e06475e03f7.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: f2d15380-1899-4c78-8c73-6e06475e03f7
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile053.png
+  - name: platformPack_tile050
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ie8a183f0-f71d-41f6-a86c-4a8dda157845.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: e8a183f0-f71d-41f6-a86c-4a8dda157845
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile050.png
+    lastmod: 1608314647188
+  - name: platformPack_tile043
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - -0.33333333333333215
+      - 0.33333333333333215
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i622ced5a-bd0b-404f-9399-aa471062f57e.png
+    shape: rect
+    left: 0
+    right: 64
+    top: -29
+    bottom: 64
+    uid: 622ced5a-bd0b-404f-9399-aa471062f57e
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile043.png
+    lastmod: 1598930973630
+  - name: platformPack_tile056
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ie7f6129d-e51f-427f-be62-ab09d6f17061.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: e7f6129d-e51f-427f-be62-ab09d6f17061
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile056.png
+  - name: platformPack_tile055
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i37d700e8-2565-4d8f-9d5f-d9870e442283.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 37d700e8-2565-4d8f-9d5f-d9870e442283
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile055.png
+  - name: platformPack_tile054
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i21074790-15b2-4936-8ede-e2755e82a2d8.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 21074790-15b2-4936-8ede-e2755e82a2d8
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile054.png
+  - name: platformPack_tile057
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ib29bdbee-906c-4f70-8c99-ece71c20e94c.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: b29bdbee-906c-4f70-8c99-ece71c20e94c
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile057.png
+  - name: platformPack_tile058
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i7e85cf93-04b4-4a6f-ad7e-33cf75e5f639.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 7e85cf93-04b4-4a6f-ad7e-33cf75e5f639
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile058.png
+  - name: platformPack_tile052
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i57e4f6f8-8875-478a-840e-0bfaaa0f4886.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 57e4f6f8-8875-478a-840e-0bfaaa0f4886
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile052.png
+  - name: platformPack_tile061
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i8d8235af-2353-4503-be6e-a39b424985e3.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 8d8235af-2353-4503-be6e-a39b424985e3
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile061.png
+  - name: platformPack_tile059
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i26d7a3a5-7f4b-4791-88d0-19ec7124bcd3.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 26d7a3a5-7f4b-4791-88d0-19ec7124bcd3
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile059.png
+  - name: platformPack_tile060
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ie6b9c49e-8b49-40b0-b6d2-9efd67de6cd8.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: e6b9c49e-8b49-40b0-b6d2-9efd67de6cd8
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile060.png
+  - name: platformPack_tile065
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i354af3ca-f1fa-4499-bcd5-b3ea6c287752.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 354af3ca-f1fa-4499-bcd5-b3ea6c287752
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile065.png
+  - name: platformPack_tile062
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: i6a2a409b-2a9e-4b17-8210-c4362ba460e5.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: 6a2a409b-2a9e-4b17-8210-c4362ba460e5
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile062.png
+  - name: platformPack_tile064
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ic831b9de-2c97-4f82-a6fc-5899f84fae7b.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: c831b9de-2c97-4f82-a6fc-5899f84fae7b
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile064.png
+  - name: platformPack_tile063
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 64
+    imgHeight: 64
+    width: 64
+    height: 64
+    offx: 0
+    offy: 0
+    origname: ib9c6ba0f-dd24-417f-872f-0c7507b5c1e1.png
+    shape: rect
+    left: 0
+    right: 64
+    top: 0
+    bottom: 64
+    uid: b9c6ba0f-dd24-417f-872f-0c7507b5c1e1
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile063.png
+  - name: man_walk
+    untill: 8
+    grid:
+      - 9
+      - 5
+    axis:
+      - 96
+      - 256
+    marginx: 0
+    marginy: 0
+    imgWidth: 1728
+    imgHeight: 1280
+    width: 192
+    height: 256
+    offx: 0
+    offy: 1024
+    origname: i07257070-6452-475e-8e6d-a15253d3416c.png
+    shape: rect
+    left: 71
+    right: 70
+    top: 220
+    bottom: 0
+    uid: 07257070-6452-475e-8e6d-a15253d3416c
+    padding: 0
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_tooncharacters1/Male
+      adventurer/Tilesheet/character_maleAdventurer_sheetHD.png
+    lastmod: 1600606948137
+    r: 96
+    stripPoints:
+      - x: 0
+        'y': -128
+      - x: 91
+        'y': -40
+      - x: 56
+        'y': 104
+      - x: -56
+        'y': 104
+      - x: -91
+        'y': -40
+    closedStrip: true
+    tiled: false
+  - name: man_idle
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 96
+      - 256
+    marginx: 0
+    marginy: 0
+    imgWidth: 1728
+    imgHeight: 1280
+    width: 192
+    height: 256
+    offx: 0
+    offy: 0
+    origname: i0eafe463-12ad-4cd0-a2b4-c6cf7f3888d5.png
+    shape: rect
+    left: 72
+    right: 70
+    top: 214
+    bottom: 0
+    uid: 0eafe463-12ad-4cd0-a2b4-c6cf7f3888d5
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_tooncharacters1/Male
+      adventurer/Tilesheet/character_maleAdventurer_sheetHD.png
+    lastmod: 1600606932095
+  - name: man_back
+    untill: 1
+    grid:
+      - 2
+      - 2
+    axis:
+      - 96
+      - 256
+    marginx: 962
+    marginy: 258
+    imgWidth: 1728
+    imgHeight: 1280
+    width: 192
+    height: 256
+    offx: -2
+    offy: 259
+    origname: i655fb7eb-81c5-4403-a0f4-8bd8f4024e14.png
+    shape: rect
+    left: 71
+    right: 69
+    top: 220
+    bottom: 0
+    uid: 655fb7eb-81c5-4403-a0f4-8bd8f4024e14
+    padding: 4
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_tooncharacters1/Male
+      adventurer/Tilesheet/character_maleAdventurer_sheetHD.png
+    lastmod: 1600606916231
+  - name: peer_idle
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 96
+      - 256
+    marginx: 0
+    marginy: 0
+    imgWidth: 1728
+    imgHeight: 1280
+    width: 192
+    height: 256
+    offx: 0
+    offy: 0
+    origname: i97969cfa-1751-4409-ba67-d60cf979cdab.png
+    shape: rect
+    left: 68
+    right: 69
+    top: 189
+    bottom: 0
+    uid: 97969cfa-1751-4409-ba67-d60cf979cdab
+    padding: 1
+    source: >-
+      /Users/alexis.anzieu/Downloads/kenney_tooncharacters1/Male
+      person/Tilesheet/character_malePerson_sheetHD.png
+    lastmod: 1600606872730
+  - name: ssense-office-front-door
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 1200
+    imgHeight: 800
+    width: 1200
+    height: 800
+    offx: 0
+    offy: 0
+    origname: i37fb978a-e053-4bd8-bebb-21096400ae29.jpg
+    shape: rect
+    left: 0
+    right: 0
+    top: 0
+    bottom: 800
+    uid: 37fb978a-e053-4bd8-bebb-21096400ae29
+    padding: 1
+    source: /Users/shady.smaoui/Downloads/ssense-office-front-door.jpg
+    tiled: true
+    lastmod: 1608318382468
+  - name: SSENSE-Office-6
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 1550
+    imgHeight: 1033
+    width: 1550
+    height: 1033
+    offx: 0
+    offy: 0
+    origname: ic3848b17-8f29-4244-999e-846cd0369e1f.jpg
+    shape: rect
+    left: 0
+    right: 0
+    top: 0
+    bottom: 1033
+    uid: c3848b17-8f29-4244-999e-846cd0369e1f
+    padding: 1
+    source: /Users/shady.smaoui/Downloads/SSENSE-Office-6.jpg
+    tiled: true
+    lastmod: 1608318415601
+  - name: ssense-fancy-front-door
+    untill: 0
+    grid:
+      - 1
+      - 1
+    axis:
+      - 0
+      - 0
+    marginx: 0
+    marginy: 0
+    imgWidth: 275
+    imgHeight: 183
+    width: 275
+    height: 183
+    offx: 0
+    offy: 0
+    origname: i1983d237-face-4e31-b9e3-a6f6d3995432.jpg
+    shape: rect
+    left: 0
+    right: 0
+    top: 0
+    bottom: 183
+    uid: 1983d237-face-4e31-b9e3-a6f6d3995432
+    padding: 1
+    source: /Users/shady.smaoui/Downloads/ssense-fancy-front-door.jpg
+    tiled: true
+    lastmod: 1608319595250
+skeletons: []
+types:
+  - name: man_walk
+    depth: 0
+    oncreate: ''
+    onstep: ''
+    ondraw: ''
+    ondestroy: ''
+    texture: 07257070-6452-475e-8e6d-a15253d3416c
+    extends: {}
+    uid: 9d1b0b07-c2a8-4d75-b0d9-690b45ba061c
+    lastmod: 1600684674066
+  - name: platform
+    depth: 0
+    oncreate: ''
+    onstep: this.move();
+    ondraw: ''
+    ondestroy: ''
+    texture: b58d49ea-5be7-4348-a261-1a8a22786744
+    extends:
+      ctype: Solid
+    uid: 136e6e1e-8bed-4be1-99bd-54a3fb9ca870
+    lastmod: 1598933640155
+  - name: inside rock
+    depth: 0
+    oncreate: ''
+    onstep: this.move();
+    ondraw: ''
+    ondestroy: ''
+    texture: 593e43ed-9a1d-441f-a5f2-ab2dad032326
+    extends:
+      ctype: Solid
+    uid: 9d3750fc-851a-4eeb-9a4b-e96c9de1a26e
+    lastmod: 1600643311234
+  - name: rock
+    depth: 0
+    oncreate: ''
+    onstep: this.move();
+    ondraw: ''
+    ondestroy: ''
+    texture: bc5d5337-59e3-46de-83e6-f6e8a86b1318
+    extends:
+      ctype: Solid
+    uid: d570f139-6cec-4f2f-b353-34850465da07
+    lastmod: 1598931810959
+  - name: checkpoint
+    depth: 0
+    oncreate: this.visible = false;
+    onstep: |-
+      var robot = ct.place.meet(this, this.x, this.y, 'Robot');
+      if (robot) {
+          robot.savedX = this.x + 100;
+          robot.savedY = this.y + 100;
+      }
+    ondraw: ''
+    ondestroy: ''
+    texture: afbedb2e-3d24-46c2-9329-f80db77da216
+    extends: {}
+    uid: 39eb1951-026c-4251-869f-f023b8d4bed8
+    lastmod: 1598936295204
+  - name: spike
+    depth: 0
+    oncreate: |+
+
+    onstep: this.move();
+    ondraw: ''
+    ondestroy: ''
+    texture: 622ced5a-bd0b-404f-9399-aa471062f57e
+    extends:
+      ctype: dead
+    uid: 3632afc5-f954-4ab0-ab9e-cfdc8391a662
+    lastmod: 1598936217414
+  - name: man_w
+    depth: 0
+    oncreate: ''
+    onstep: this.move();
+    ondraw: ''
+    ondestroy: ''
+    texture: aab4f4de-007d-4539-a0ed-b205f957a33d
+    extends: {}
+    uid: ee6fbcc1-fb0a-4c1a-938a-835c4ddfdfdf
+    lastmod: 1608315288731
+  - name: man_idle
+    depth: 0
+    oncreate: |+
+
+
+      this.hspd = 0; // Horizontal speed
+      this.vspd = 0; // Vertical speed
+
+      ct.camera.follow = this;
+      ct.camera.borderX = 50;
+      ct.camera.borderY = 50;
+
+      this.animationSpeed = 0.2;
+
+    onstep: |2
+          let enableDialog = (type) => {
+              const peer = ct.place.meet(type, type.x + 10, type.y + 10, 'peer_idle') ||
+                           ct.place.meet(type, type.x - 10, type.y - 10, 'peer_idle')
+              if (peer && !ct.room.dialogBox.visible) {
+                  console.log(peer)
+                  ct.room.dialogBox.text =  `${ct.room.welcomeMessage[Math.floor(Math.random() * ct.room.welcomeMessage.length)]},  Im ${peer.name}. ${peer.description}`
+                  ct.room.dialogBox.visible = true;
+              }
+          }
+          let hasSolidCollision = (type, direction) => {
+              if (direction === 'horizontal' && ct.place.free(type, type.x + Math.sign(type.hspd), type.y, 'Solid') ||
+                  direction === 'vertical' && ct.place.free(type, type.x, type.y + Math.sign(type.vspd), 'Solid')
+              ) {
+                  if (ct.room.name === "central_room")
+                  ct.room.dialogBox.visible = false;
+                  return false;
+              }
+              enableDialog(this)
+              return true;
+          }
+
+          this.speed = 4 * ct.delta;
+
+          if (ct.actions.MoveLeft.down) {
+              if (this.tex != 'man_walk') this.tex = 'man_walk';
+              this.scale.x = -1;
+              this.hspd = -this.speed;
+          } else if (ct.actions.MoveRight.down) {
+              if (this.tex != 'man_walk') this.tex = 'man_walk';
+              this.scale.x = 1;
+              this.hspd = this.speed;
+          } else if (ct.actions.MoveUp.down) {
+              if (this.tex != 'man_back') this.tex = 'man_back';
+              this.vspd = -this.speed;
+          } else if (ct.actions.MoveDown.down) {
+              if (this.tex != 'man_idle') this.tex = 'man_idle';
+              this.vspd = this.speed;
+          } else {
+              this.hspd = 0;
+              this.vspd = 0;
+              if (this.tex == 'man_walk') this.tex = 'man_idle';
+          }
+
+          this.play();
+
+          for (var i = 0; i < Math.abs(this.hspd); i++) {
+
+              if (!hasSolidCollision(this, 'horizontal')) {
+                  this.x += Math.sign(this.hspd);
+              } else {
+                  break;
+              }
+          }
+          for (var i = 0; i < Math.abs(this.vspd); i++) {
+
+              if (!hasSolidCollision(this, 'vertical')) {
+                  this.y += Math.sign(this.vspd);
+              } else {
+                  break;
+              }
+          }
+    ondraw: ''
+    ondestroy: ''
+    texture: 0eafe463-12ad-4cd0-a2b4-c6cf7f3888d5
+    extends: {}
+    uid: 027a2d24-0cfa-4d4c-9313-af8c74e5da44
+    lastmod: 1608315864173
+  - name: man_back
+    depth: 0
+    oncreate: ''
+    onstep: this.move();
+    ondraw: ''
+    ondestroy: ''
+    texture: 655fb7eb-81c5-4403-a0f4-8bd8f4024e14
+    extends: {}
+    uid: 26447594-5c8f-4b43-83ca-b89fa6b1ec75
+    lastmod: 1600641711161
+  - name: peer_idle
+    depth: 0
+    oncreate: |-
+      let label = new PIXI.Text(this.name);
+      label.x = -60;
+      label.y = -225;
+      this.addChild(label);
+    onstep: |+
+
+
+
+
+    ondraw: ''
+    ondestroy: ''
+    texture: 97969cfa-1751-4409-ba67-d60cf979cdab
+    extends:
+      ctype: Solid
+    uid: 240315c2-a383-4feb-914d-8811d911a406
+    lastmod: 1600684563546
+  - name: sixfloor
+    depth: 0
+    oncreate: ''
+    onstep: |-
+      if (ct.room.sixfloor) {
+          // Do we collide with the Robot?
+          if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
+              // Switch to the next room
+              ct.rooms.switch(ct.room.sixfloor);
+          }
+      } else {
+              if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
+              // Switch to the next room
+              ct.rooms.switch(ct.room.central_room);
+          }
+      }
+    ondraw: ''
+    ondestroy: ''
+    texture: bc247c0f-5bb8-4e8b-8f76-277109ed9cc4
+    extends:
+      ctype: exit
+    uid: 726f2fe2-8a99-4a40-875c-6b996652f365
+    lastmod: 1608315389432
+  - name: ninefloor
+    depth: 0
+    oncreate: ''
+    onstep: |-
+      if (ct.room.ninefloor) {
+          // Do we collide with the Robot?
+          if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
+              // Switch to the next room
+              ct.rooms.switch(ct.room.ninefloor);
+          }
+      } else {
+              if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
+              // Switch to the next room
+              ct.rooms.switch(ct.room.central_room);
+          }
+      }
+    ondraw: ''
+    ondestroy: ''
+    texture: e8a183f0-f71d-41f6-a86c-4a8dda157845
+    extends:
+      ctype: exit
+    uid: 6dff9cbb-22ac-439a-81e8-c9ee2a5ca435
+    lastmod: 1608315778827
+sounds: []
+styles: []
+rooms:
+  - name: central_room
+    oncreate: >
+
+      getLabel(this);
+
+
+      this.sixfloor = 'sixfloor'
+
+      this.ninefloor = 'ninefloor'
+
+
+      this.dialogBox = new PIXI.Text(null, { fontSize: 50, fill : 'white', align
+      : 'center', dropShadow: true});
+
+      this.dialogBox.x = this.dialogBox.y = 800;
+
+      this.dialogBox.visible = false;
+
+      this.addChild(this.dialogBox);
+
+      this.welcomeMessage = ['Hello', 'Welcome on board', 'Hey!']
+    onstep: ''
+    ondraw: ''
+    onleave: ''
+    width: 2000
+    height: 1000
+    backgrounds:
+      - depth: -999
+        texture: 37fb978a-e053-4bd8-bebb-21096400ae29
+        extends:
+          repeat: no-repeat
+          scaleY: 1.23
+          scaleX: 1.67
+    copies:
+      - x: -3
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 84
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 148
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 212
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 276
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 340
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 404
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 404
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 468
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 532
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 596
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 596
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 660
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 724
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 788
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 852
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 916
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: -3
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 61
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 61
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 125
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 125
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 125
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 125
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 189
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 189
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 253
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 253
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 317
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 317
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 381
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 381
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 445
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 445
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 509
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 509
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 573
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 573
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 637
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 637
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 697
+        'y': 720
+        uid: 027a2d24-0cfa-4d4c-9313-af8c74e5da44
+        tx: 1
+        ty: 1
+      - x: 701
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 701
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 765
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 765
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 829
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 829
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 893
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 893
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 957
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 957
+        'y': 148
+        uid: 726f2fe2-8a99-4a40-875c-6b996652f365
+        tx: 3
+        ty: 3
+      - x: 957
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1021
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1021
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1085
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1085
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1149
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1149
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1213
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1213
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1277
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1277
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1341
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1341
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1405
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1405
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1469
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1469
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1533
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1533
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1597
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1597
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1661
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1661
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1661
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1725
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1725
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1789
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1789
+        'y': 660
+        uid: 6dff9cbb-22ac-439a-81e8-c9ee2a5ca435
+        tx: 3
+        ty: 3
+      - x: 1789
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1853
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1853
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1917
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1917
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1917
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 20
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 84
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 148
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 212
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 276
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 340
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 404
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 468
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 532
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 596
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 660
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 724
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 788
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 852
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 916
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1981
+        'y': 980
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2045
+        'y': 276
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2045
+        'y': 340
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2045
+        'y': 404
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2045
+        'y': 404
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+    tiles:
+      - depth: -10
+        tiles: []
+        extends: {}
+    uid: 3406c3dc-8e15-4c93-ac1c-f17f8ab4ff8c
+    thumbnail: f17f8ab4ff8c
+    extends: {}
+    gridX: 64
+    gridY: 64
+    lastmod: 1608319489284
+  - name: sixfloor
+    oncreate: |-
+
+      this.central_room="central_room"
+    onstep: ''
+    ondraw: ''
+    onleave: ''
+    width: 2000
+    height: 1000
+    backgrounds:
+      - depth: -999
+        texture: 1983d237-face-4e31-b9e3-a6f6d3995432
+        extends:
+          repeat: no-repeat
+          scaleX: 7.2
+          scaleY: 4.99
+    copies:
+      - x: 0
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 64
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 192
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 256
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 320
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 448
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 512
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 576
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 576
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 128
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 128
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 192
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 256
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 320
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 384
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 448
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 512
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 576
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 640
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 704
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 768
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 128
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 128
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 64
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 704
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 768
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 832
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 896
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 640
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 896
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 960
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1024
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1088
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1152
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1216
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1280
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1344
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1408
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1472
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1536
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1600
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1664
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1728
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1792
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1856
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1920
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1920
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 832
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 128
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 192
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 256
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 320
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 384
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 448
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 512
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 576
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 640
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 704
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 768
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 832
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 896
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 960
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1024
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1088
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1152
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1216
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1280
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1344
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1408
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1472
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1536
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1600
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1664
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1664
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 64
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1792
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1856
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1920
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1728
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 64
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 128
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 192
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 256
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2048
+        'y': 256
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2048
+        'y': 320
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2048
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2048
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 448
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 512
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 576
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 640
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 704
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 768
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 832
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 896
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 320
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 960
+        'y': 128
+        uid: 726f2fe2-8a99-4a40-875c-6b996652f365
+        tx: 3
+        ty: 3
+      - x: 1088
+        'y': 576
+        uid: 027a2d24-0cfa-4d4c-9313-af8c74e5da44
+    tiles:
+      - depth: -10
+        tiles: []
+        extends: {}
+    uid: 45adf200-7cdc-49c8-b4c4-302b422189df
+    thumbnail: 302b422189df
+    extends: {}
+    gridX: 64
+    gridY: 64
+    lastmod: 1608319692481
+  - name: ninefloor
+    oncreate: |-
+
+      this.central_room = "central_room"
+    onstep: ''
+    ondraw: ''
+    onleave: ''
+    width: 2000
+    height: 1000
+    backgrounds:
+      - depth: -99999
+        texture: 593e43ed-9a1d-441f-a5f2-ab2dad032326
+        extends: {}
+      - depth: -999
+        texture: c3848b17-8f29-4244-999e-846cd0369e1f
+        extends:
+          repeat: repeat-x
+          parallaxY: 3.05
+          parallaxX: 1.29
+          movementX: 1.2
+          scaleX: 1.28
+          scaleY: 0.96
+    copies:
+      - x: 0
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 64
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 192
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 256
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 320
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 448
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 512
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 576
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 576
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 128
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 128
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 192
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 256
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 320
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 384
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 448
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 512
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 576
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 640
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 704
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 768
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 128
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 128
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 64
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 704
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 768
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 832
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 896
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 0
+        'y': 640
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 896
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 960
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1024
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1088
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1152
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1216
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1280
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1344
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1408
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1472
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1536
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1600
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1664
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1728
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1792
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1856
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1920
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1920
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 832
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 128
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 192
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 256
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 320
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 384
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 448
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 512
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 576
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 640
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 704
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 768
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 832
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 896
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 960
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1024
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1088
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1152
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1216
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1280
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1344
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1408
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1472
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1536
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1600
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1664
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1664
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 64
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1792
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1856
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1920
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1728
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 0
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 64
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 128
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 192
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 256
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2048
+        'y': 256
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2048
+        'y': 320
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2048
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 2048
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 384
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 448
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 512
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 576
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 640
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 704
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 768
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 832
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 896
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 960
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1984
+        'y': 320
+        uid: d570f139-6cec-4f2f-b353-34850465da07
+      - x: 1792
+        'y': 640
+        uid: 6dff9cbb-22ac-439a-81e8-c9ee2a5ca435
+        tx: 3
+        ty: 3
+      - x: 1536
+        'y': 832
+        uid: 027a2d24-0cfa-4d4c-9313-af8c74e5da44
+    tiles:
+      - depth: -10
+        tiles: []
+        extends: {}
+    uid: 0533044b-830a-4452-92a5-bf1274692885
+    thumbnail: bf1274692885
+    extends: {}
+    gridX: 64
+    gridY: 64
+    lastmod: 1608318579294
+actions:
+  - name: MoveRight
+    methods:
+      - code: keyboard.KeyD
+      - code: keyboard.ArrowRight
+  - name: MoveLeft
+    methods:
+      - code: keyboard.ArrowLeft
+      - code: keyboard.KeyA
+  - name: MoveUp
+    methods:
+      - code: keyboard.KeyW
+      - code: keyboard.ArrowUp
+  - name: MoveDown
+    methods:
+      - code: keyboard.KeyS
+      - code: keyboard.ArrowDown
+emitterTandems: []
+scripts:
+  - name: New Script
+    code: |-
+      /* Use scripts to define frequent functions and import small libraries */
+
+      var getLabel = (room) => {
+
+
+          if (room.name === 'central_room') {
+          console.log(room.name)
+
+              var d = new Date();
+              var n = d.getSeconds();
+
+              fetch(`https://jsonplaceholder.typicode.com/todos/${n}`)
+                  .then(response => response.json())
+                  .then(json => {
+                      const scoreLabel = new PIXI.Text('Score: ' + json.title);
+
+                      scoreLabel.x = 330;
+                      scoreLabel.y = 30;
+                      scoreLabel.depth = 1000;
+                      room.addChild(scoreLabel);
+
+
+                      // ct.rooms.append('gui', {
+                      //     isUi: true
+                      // });
+
+
+                      let peers = [
+                          {
+                              sex: 'men',
+                              name: 'alexis anzieu',
+                              slack: 'https://ssense.slack.com/archives/DDVHQF7R7',
+                              description: 'I work as devops'
+                          },
+                          {
+                              sex: 'women',
+                              name: 'alexa darwin',
+                              slack: 'https://ssense.slack.com/archives/DDVHQF7R7',
+                              description: 'I work as PM'
+                          },
+                          {
+                              sex: 'women',
+                              name: 'ooopsi S',
+                              slack: 'https://ssense.slack.com/archives/DDVHQF7R7',
+                              description: 'I work as Software dev'
+                          }
+                      ]
+
+                      peers.forEach((peer, index) => {
+                          const peerCopy = ct.types.copy('peer_idle', 200 + 250 * index, 300, {
+                              name: peer.name,
+                              slack: peer.slack,
+                              description: peer.description
+                          })
+                          peerCopy.interactive = true;
+                          peerCopy.buttonMode = true;
+                          peerCopy.on('click', function () {
+                              window.open(peer.slack);
+                          });
+                          return peerCopy;
+                      })
+
+                  })
+          }
+
+
+      }
+starting: 0
+settings:
+  authoring:
+    author: alexis anzieu
+    site: ''
+    title: onboardgaming
+    version:
+      - 0
+      - 0
+      - 0
+    versionPostfix: ''
+  rendering:
+    usePixiLegacy: true
+    maxFPS: 60
+    pixelatedrender: false
+    highDensity: true
+    desktopMode: maximized
+  export:
+    windows: true
+    linux: true
+    mac: true
+    functionWrap: false
+    codeModifier: none
+  branding:
+    icon: -1
+    accent: '#446adb'
+    invertPreloaderScheme: true
+  fps: 30
+fonts: []
+palette:
+  - '#62DB44'
+startroom: 3406c3dc-8e15-4c93-ac1c-f17f8ab4ff8c
+styletick: .nan
