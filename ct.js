@@ -3363,7 +3363,13 @@ ct.rooms.beforeDraw = function beforeDraw() {
     
 };
 ct.rooms.afterDraw = function afterDraw() {
-    if (ct.sound.follow && !ct.sound.follow.kill) {
+    ct.mouse.xprev = ct.mouse.x;
+ct.mouse.yprev = ct.mouse.y;
+ct.mouse.xuiprev = ct.mouse.xui;
+ct.mouse.yuiprev = ct.mouse.yui;
+ct.mouse.pressed = ct.mouse.released = false;
+ct.inputs.registry['mouse.Wheel'] = 0;
+if (ct.sound.follow && !ct.sound.follow.kill) {
     ct.sound.howler.pos(
         ct.sound.follow.x,
         ct.sound.follow.y,
@@ -3372,12 +3378,6 @@ ct.rooms.afterDraw = function afterDraw() {
 } else if (ct.sound.manageListenerPosition) {
     ct.sound.howler.pos(ct.camera.x, ct.camera.y, ct.camera.z || 0);
 }
-ct.mouse.xprev = ct.mouse.x;
-ct.mouse.yprev = ct.mouse.y;
-ct.mouse.xuiprev = ct.mouse.xui;
-ct.mouse.yuiprev = ct.mouse.yui;
-ct.mouse.pressed = ct.mouse.released = false;
-ct.inputs.registry['mouse.Wheel'] = 0;
 ct.keyboard.clear();
 
 };
@@ -3626,8 +3626,7 @@ PIXI.Loader.shared
 
         loadingScreen.classList.add('hidden');
         setTimeout(() => {
-            ct.mouse.setupListeners();
-Object.defineProperty(ct.types.Copy.prototype, 'ctype', {
+            Object.defineProperty(ct.types.Copy.prototype, 'ctype', {
     set: function (value) {
         this.$ctype = value;
     },
@@ -3666,6 +3665,7 @@ Object.defineProperty(ct.types.Tilemap.prototype, 'enableCollisions', {
         ct.place.enableTilemapCollisions(this, ctype);
     }
 });
+ct.mouse.setupListeners();
 
             PIXI.Ticker.shared.add(ct.loop);
             ct.rooms.forceSwitch(ct.rooms.starting);
