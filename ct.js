@@ -3388,7 +3388,7 @@ ct.rooms.templates['central_room'] = {
     width: 2000,
     height: 1000,
     /* JSON.parse allows for a much faster loading of big objects */
-    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":512,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1024,"y":0,"type":"rock"},{"x":1088,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":1216,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":700,"y":700,"tx":1,"ty":1,"type":"man_idle"},{"x":960,"y":128,"tx":3,"ty":3,"type":"sixfloor"},{"x":1792,"y":640,"tx":3,"ty":3,"type":"ninefloor"}]'),
+    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":512,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1024,"y":0,"type":"rock"},{"x":1088,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":1216,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":700,"y":700,"tx":1,"ty":1,"type":"man_idle"},{"x":960,"y":128,"tx":3,"ty":3,"type":"sixfloor"},{"x":1792,"y":640,"tx":3,"ty":3,"type":"ninefloor"},{"x":704,"y":832,"tx":2.5,"ty":2.5,"type":"machetefloor"}]'),
     bgs: JSON.parse('[{"depth":-99999,"texture":"platformPack_tile004","extends":{}}]'),
     tiles: JSON.parse('[{"depth":-10,"tiles":[],"extends":{}}]'),
     backgroundColor: '#000000',
@@ -3407,6 +3407,7 @@ getLabel(this);
 
 this.sixfloor = 'sixfloor'
 this.ninefloor = 'ninefloor'
+this.machete = 'machete'
 
 this.dialogBox = new PIXI.Text(null, { fontSize: 50, fill : 'white', align : 'center', dropShadow: true});
 this.dialogBox.x = this.dialogBox.y = 800;
@@ -3465,12 +3466,12 @@ this.central_room = "central_room"
     },
     extends: {}
 }
-ct.rooms.templates['Machete'] = {
-    name: 'Machete',
+ct.rooms.templates['machete'] = {
+    name: 'machete',
     width: 900,
     height: 500,
     /* JSON.parse allows for a much faster loading of big objects */
-    objects: JSON.parse('[{"x":0,"y":320,"type":"sixfloor"},{"x":832,"y":320,"type":"ninefloor"}]'),
+    objects: JSON.parse('[{"x":80,"y":384,"tx":0.35,"ty":0.35,"type":"man_idle"},{"x":-64,"y":448,"type":"rocks_collison"},{"x":-64,"y":448,"type":"rocks_collison"},{"x":-64,"y":448,"type":"rocks_collison"},{"x":-64,"y":448,"type":"rocks_collison"},{"x":0,"y":512,"type":"rocks_collison"},{"x":0,"y":512,"type":"rocks_collison"},{"x":128,"y":512,"type":"rocks_collison"},{"x":192,"y":512,"type":"rocks_collison"},{"x":256,"y":512,"type":"rocks_collison"},{"x":320,"y":512,"type":"rocks_collison"},{"x":384,"y":512,"type":"rocks_collison"},{"x":448,"y":512,"type":"rocks_collison"},{"x":512,"y":512,"type":"rocks_collison"},{"x":576,"y":512,"type":"rocks_collison"},{"x":640,"y":512,"type":"rocks_collison"},{"x":704,"y":512,"type":"rocks_collison"},{"x":768,"y":512,"type":"rocks_collison"},{"x":832,"y":512,"type":"rocks_collison"},{"x":896,"y":512,"type":"rocks_collison"},{"x":832,"y":512,"type":"rocks_collison"},{"x":832,"y":512,"type":"rocks_collison"},{"x":-64,"y":64,"type":"rocks_collison"},{"x":-64,"y":128,"type":"rocks_collison"},{"x":-64,"y":192,"type":"rocks_collison"},{"x":-64,"y":256,"type":"rocks_collison"},{"x":-64,"y":320,"type":"rocks_collison"},{"x":-64,"y":384,"type":"rocks_collison"},{"x":-64,"y":384,"type":"rocks_collison"},{"x":-64,"y":0,"type":"rocks_collison"},{"x":-64,"y":64,"type":"rocks_collison"},{"x":-64,"y":0,"type":"rocks_collison"},{"x":-64,"y":-64,"type":"rocks_collison"},{"x":0,"y":-64,"type":"rocks_collison"},{"x":64,"y":-64,"type":"rocks_collison"},{"x":128,"y":-64,"type":"rocks_collison"},{"x":192,"y":-64,"type":"rocks_collison"},{"x":256,"y":-64,"type":"rocks_collison"},{"x":384,"y":-64,"type":"rocks_collison"},{"x":512,"y":-64,"type":"rocks_collison"},{"x":640,"y":-64,"type":"rocks_collison"},{"x":960,"y":-128,"type":"rocks_collison"},{"x":768,"y":-64,"type":"rocks_collison"},{"x":704,"y":-64,"type":"rocks_collison"},{"x":640,"y":-64,"type":"rocks_collison"},{"x":576,"y":-64,"type":"rocks_collison"},{"x":512,"y":-64,"type":"rocks_collison"},{"x":448,"y":-64,"type":"rocks_collison"},{"x":384,"y":-64,"type":"rocks_collison"},{"x":320,"y":-64,"type":"rocks_collison"},{"x":384,"y":-64,"type":"rocks_collison"},{"x":448,"y":-64,"type":"rocks_collison"},{"x":576,"y":-64,"type":"rocks_collison"},{"x":640,"y":-64,"type":"rocks_collison"},{"x":704,"y":-64,"type":"rocks_collison"},{"x":768,"y":-64,"type":"rocks_collison"},{"x":832,"y":-64,"type":"rocks_collison"},{"x":896,"y":-64,"type":"rocks_collison"},{"x":960,"y":-64,"type":"rocks_collison"},{"x":896,"y":-64,"type":"rocks_collison"},{"x":896,"y":0,"type":"rocks_collison"},{"x":896,"y":64,"type":"rocks_collison"},{"x":896,"y":128,"type":"rocks_collison"},{"x":896,"y":192,"type":"rocks_collison"},{"x":896,"y":256,"type":"rocks_collison"},{"x":896,"y":192,"type":"rocks_collison"},{"x":896,"y":256,"type":"rocks_collison"},{"x":896,"y":320,"type":"rocks_collison"},{"x":896,"y":384,"type":"rocks_collison"},{"x":896,"y":448,"type":"rocks_collison"},{"x":896,"y":512,"type":"rocks_collison"},{"x":896,"y":512,"type":"rocks_collison"},{"x":0,"y":512,"type":"rocks_collison"},{"x":0,"y":576,"type":"rocks_collison"},{"x":64,"y":576,"type":"rocks_collison"},{"x":128,"y":576,"type":"rocks_collison"},{"x":128,"y":512,"type":"rocks_collison"},{"x":64,"y":512,"type":"rocks_collison"},{"x":0,"y":512,"type":"rocks_collison"},{"x":0,"y":576,"type":"rocks_collison"},{"x":-64,"y":576,"type":"rocks_collison"},{"x":-64,"y":512,"type":"rocks_collison"},{"x":-64,"y":512,"type":"rocks_collison"},{"x":192,"y":192,"type":"rocks_collison"},{"x":256,"y":192,"type":"rocks_collison"},{"x":320,"y":192,"type":"rocks_collison"},{"x":384,"y":192,"type":"rocks_collison"},{"x":448,"y":192,"type":"rocks_collison"},{"x":512,"y":192,"type":"rocks_collison"},{"x":576,"y":192,"type":"rocks_collison"},{"x":640,"y":192,"type":"rocks_collison"},{"x":704,"y":192,"type":"rocks_collison"},{"x":768,"y":192,"type":"rocks_collison"},{"x":832,"y":192,"type":"rocks_collison"},{"x":832,"y":128,"type":"rocks_collison"},{"x":768,"y":128,"type":"rocks_collison"},{"x":704,"y":128,"type":"rocks_collison"},{"x":640,"y":128,"type":"rocks_collison"},{"x":640,"y":192,"type":"rocks_collison"},{"x":576,"y":192,"type":"rocks_collison"},{"x":512,"y":192,"type":"rocks_collison"},{"x":512,"y":192,"type":"rocks_collison"},{"x":448,"y":192,"type":"rocks_collison"},{"x":384,"y":192,"type":"rocks_collison"},{"x":384,"y":128,"type":"rocks_collison"},{"x":320,"y":128,"type":"rocks_collison"},{"x":320,"y":192,"type":"rocks_collison"},{"x":256,"y":192,"type":"rocks_collison"},{"x":192,"y":192,"type":"rocks_collison"},{"x":128,"y":192,"type":"rocks_collison"},{"x":64,"y":192,"type":"rocks_collison"},{"x":64,"y":128,"type":"rocks_collison"},{"x":0,"y":128,"type":"rocks_collison"},{"x":64,"y":128,"type":"rocks_collison"},{"x":128,"y":128,"type":"rocks_collison"},{"x":192,"y":128,"type":"rocks_collison"},{"x":256,"y":128,"type":"rocks_collison"},{"x":320,"y":128,"type":"rocks_collison"},{"x":384,"y":128,"type":"rocks_collison"},{"x":384,"y":192,"type":"rocks_collison"},{"x":448,"y":192,"type":"rocks_collison"},{"x":512,"y":192,"type":"rocks_collison"},{"x":576,"y":192,"type":"rocks_collison"},{"x":640,"y":128,"type":"rocks_collison"},{"x":576,"y":128,"type":"rocks_collison"},{"x":512,"y":128,"type":"rocks_collison"},{"x":448,"y":128,"type":"rocks_collison"},{"x":384,"y":128,"type":"rocks_collison"},{"x":320,"y":128,"type":"rocks_collison"},{"x":256,"y":128,"type":"rocks_collison"},{"x":192,"y":128,"type":"rocks_collison"},{"x":128,"y":128,"type":"rocks_collison"},{"x":128,"y":128,"type":"rocks_collison"},{"x":0,"y":192,"type":"rocks_collison"},{"x":768,"y":320,"type":"machetefloor"}]'),
     bgs: JSON.parse('[{"depth":-8,"texture":"kissclipart-office-background-clipart-desktop-wallpaper-clip-a-ca29d0067fe62ddf","extends":{"repeat":"no-repeat"}}]'),
     tiles: JSON.parse('[{"depth":-10,"tiles":[],"extends":{}}]'),
     backgroundColor: '#000000',
@@ -3484,7 +3485,7 @@ ct.rooms.templates['Machete'] = {
         
     },
     onCreate() {
-        
+        this.central_room = "central_room"
     },
     extends: {}
 }
@@ -3650,8 +3651,7 @@ PIXI.Loader.shared
 
         loadingScreen.classList.add('hidden');
         setTimeout(() => {
-            ct.mouse.setupListeners();
-Object.defineProperty(ct.types.Copy.prototype, 'ctype', {
+            Object.defineProperty(ct.types.Copy.prototype, 'ctype', {
     set: function (value) {
         this.$ctype = value;
     },
@@ -3690,6 +3690,7 @@ Object.defineProperty(ct.types.Tilemap.prototype, 'enableCollisions', {
         ct.place.enableTilemapCollisions(this, ctype);
     }
 });
+ct.mouse.setupListeners();
 
             PIXI.Ticker.shared.add(ct.loop);
             ct.rooms.forceSwitch(ct.rooms.starting);
@@ -4387,9 +4388,9 @@ ct.types.templates["ninefloor"] = {
 }
 };
 ct.types.list['ninefloor'] = [];
-ct.types.templates["NewType"] = {
-    depth: 0,
-    
+ct.types.templates["rocks_collison"] = {
+    depth: -9,
+    texture: "platformPack_tile016",
     onStep: function () {
         this.move();
     },
@@ -4402,9 +4403,42 @@ ct.types.templates["NewType"] = {
     onCreate: function () {
         
     },
-    extends: {}
+    extends: {
+    "ctype": "Solid"
+}
 };
-ct.types.list['NewType'] = [];
+ct.types.list['rocks_collison'] = [];
+ct.types.templates["machetefloor"] = {
+    depth: 0,
+    texture: "platformPack_tile049",
+    onStep: function () {
+        if (ct.room.machete) {
+    // Do we collide with the Robot?
+    if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
+        // Switch to the next room
+        ct.rooms.switch(ct.room.machete);
+    }
+} else {
+        if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
+        // Switch to the next room
+        ct.rooms.switch(ct.room.central_room);
+    }
+}
+    },
+    onDraw: function () {
+        
+    },
+    onDestroy: function () {
+        
+    },
+    onCreate: function () {
+        
+    },
+    extends: {
+    "ctype": "exit"
+}
+};
+ct.types.list['machetefloor'] = [];
     
 
     ct.types.beforeStep = function beforeStep() {
