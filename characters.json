@@ -1,26 +1,32 @@
 [
   {
     "sex": "man",
-    "name": "Clark Kent",
-    "slack": "https://ssense.slack.com/archives/DDVHQF7R7",
-    "description": "Let's open this yellow door"
+    "name": "Machete",
+    "slack": "https://ssense.slack.com/archives/CGK4C0LT0",
+    "description": "We are the recommendation team.... We connect data pipelines crafted by Data Engineering to AI Models designed by Data Science in a scalable and resilient infrastructure to serve content recommendations on demand. \nWe predict what you’d like to buy… so buy it…\nTechnology used: Python, Typescript, Redis, Mysql"
   },
   {
     "sex": "man",
-    "name": "Perter Parker",
-    "slack": "https://ssense.slack.com/archives/DDVHQF7R7",
-    "description": "I work as PM"
+    "name": "Devops",
+    "slack": "https://ssense.slack.com/archives/C3V5VQUMN",
+    "description": "Devs are the Engine - We’re the Oil. The ninjas with root access. We’re the ones who tell you your deployment is too expensive. You need us more than we need you.\nTechnology used: AWS, Kubernetes\n"
   },
   {
     "sex": "man",
-    "name": "Bruce Wayne",
-    "slack": "https://ssense.slack.com/archives/DDVHQF7R7",
-    "description": "I work as Software dev"
+    "name": "Cobalt",
+    "slack": "https://ssense.slack.com/archives/C018W9QAZKQ",
+    "description": "Description: The elastic catalog. We know everything there is to know about products. \nTechnology used: We like pubsub! And use Typescript mainly\n"
   },
   {
     "sex": "woman",
-    "name": "Selina Kyle",
-    "slack": "https://ssense.slack.com/archives/DDVHQF7R7",
-    "description": "I work as Software dev"
+    "name": "Phoenix",
+    "slack": "https://ssense.slack.com/archives/C9NBF1Z36",
+    "description": "Owners of Purchase Order Management systems (PO) and Product Information Management System (PIM)\nTechnology used: Python, Typescript, React, PHP, SQS, SNS\n"
+  },
+  {
+    "sex": "woman",
+    "name": "Arrow",
+    "slack": "https://ssense.slack.com/archives/C01B9809R8C",
+    "description": "We build integration layers with the warehouse management system. "
   }
 ]
