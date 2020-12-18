@@ -2941,13 +2941,239 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
         document.attachEvent('onkeyup', ct.keyboard.onUp);
     }
 })();
+
+
+(function ctTransition() {
+    const makeGenericTransition = function makeGenericTransition(name, exts) {
+        ct.rooms.templates.CTTRANSITIONEMPTYROOM.width = ct.camera.width;
+        ct.rooms.templates.CTTRANSITIONEMPTYROOM.height = ct.camera.height;
+        const room = ct.rooms.append('CTTRANSITIONEMPTYROOM', {
+            isUi: true
+        });
+        const transition = ct.types.copy(
+            name, 0, 0,
+            Object.assign({
+                room
+            }, exts), room
+        );
+        return transition.promise;
+    };
+    ct.transition = {
+        fadeOut(duration, color) {
+            duration = duration || 500;
+            color = color || 0x000000; // Defaults to a black color
+            return makeGenericTransition('CTTRANSITION_FADE', {
+                duration,
+                color,
+                in: false
+            });
+        },
+        fadeIn(duration, color) {
+            duration = duration || 500;
+            color = color || 0x000000; // Defaults to a black color
+            return makeGenericTransition('CTTRANSITION_FADE', {
+                duration,
+                color,
+                in: true
+            });
+        },
+        scaleOut(duration, scaling, color) {
+            duration = duration || 500;
+            scaling = scaling || 0.1;
+            color = color || 0x000000; // Defaults to a black color
+            return makeGenericTransition('CTTRANSITION_SCALE', {
+                duration,
+                color,
+                scaling,
+                in: false
+            });
+        },
+        scaleIn(duration, scaling, color) {
+            duration = duration || 500;
+            scaling = scaling || 0.1;
+            color = color || 0x000000; // Defaults to a black color
+            return makeGenericTransition('CTTRANSITION_SCALE', {
+                duration,
+                color,
+                scaling,
+                in: true
+            });
+        },
+        slideOut(duration, direction, color) {
+            duration = duration || 500;
+            direction = direction || 'right';
+            color = color || 0x000000; // Defaults to a black color
+            return makeGenericTransition('CTTRANSITION_SLIDE', {
+                duration,
+                color,
+                endAt: direction,
+                in: false
+            });
+        },
+        slideIn(duration, direction, color) {
+            duration = duration || 500;
+            direction = direction || 'right';
+            color = color || 0x000000; // Defaults to a black color
+            return makeGenericTransition('CTTRANSITION_SLIDE', {
+                duration,
+                color,
+                endAt: direction,
+                in: true
+            });
+        },
+        circleOut(duration, color) {
+            color = color || 0x000000; // Defaults to a black color
+            return makeGenericTransition('CTTRANSITION_CIRCLE', {
+                duration,
+                color,
+                in: true
+            });
+        },
+        circleIn(duration, color) {
+            color = color || 0x000000; // Defaults to a black color
+            return makeGenericTransition('CTTRANSITION_CIRCLE', {
+                duration,
+                color,
+                in: false
+            });
+        }
+    };
+})();
+
+
+/* global CtTimer */
+
+ct.tween = {
+    /**
+     * Creates a new tween effect and adds it to the game loop
+     *
+     * @param {Object} options An object with options:
+     * @param {Object|Copy} options.obj An object to animate. All objects are supported.
+     * @param {Object} options.fields A map with pairs `fieldName: newValue`.
+     * Values must be of numerical type.
+     * @param {Function} options.curve An interpolating function. You can write your own,
+     * or use default ones (see methods in `ct.tween`). The default one is `ct.tween.ease`.
+     * @param {Number} options.duration The duration of easing, in milliseconds.
+     * @param {Number} options.useUiDelta If true, use ct.deltaUi instead of ct.delta.
+     * The default is `false`.
+     * @param {boolean} options.silent If true, will not throw errors if the animation
+     * was interrupted.
+     *
+     * @returns {Promise} A promise which is resolved if the effect was fully played,
+     * or rejected if it was interrupted manually by code, room switching or instance kill.
+     * You can call a `stop()` method on this promise to interrupt it manually.
+     */
+    add(options) {
+        var tween = {
+            obj: options.obj,
+            fields: options.fields || {},
+            curve: options.curve || ct.tween.ease,
+            duration: options.duration || 1000,
+            timer: new CtTimer(this.duration, false, options.useUiDelta || false)
+        };
+        var promise = new Promise((resolve, reject) => {
+            tween.resolve = resolve;
+            tween.reject = reject;
+            tween.starting = {};
+            for (var field in tween.fields) {
+                tween.starting[field] = tween.obj[field] || 0;
+            }
+            ct.tween.tweens.push(tween);
+        });
+        if (options.silent) {
+            promise.catch(() => void 0);
+            tween.timer.catch(() => void 0);
+        }
+        promise.stop = function stop() {
+            tween.reject({
+                code: 0,
+                info: 'Stopped by game logic',
+                from: 'ct.tween'
+            });
+        };
+        return promise;
+    },
+    /**
+     * Linear interpolation.
+     * Here and below, these parameters are used:
+     *
+     * @param {Number} s Starting value
+     * @param {Number} d The change of value to transition to, the Delta
+     * @param {Number} a The current timing state, 0-1
+     * @returns {Number} Interpolated value
+     */
+    linear(s, d, a) {
+        return d * a + s;
+    },
+    ease(s, d, a) {
+        a *= 2;
+        if (a < 1) {
+            return d / 2 * a * a + s;
+        }
+        a--;
+        return -d / 2 * (a * (a - 2) - 1) + s;
+    },
+    easeInQuad(s, d, a) {
+        return d * a * a + s;
+    },
+    easeOutQuad(s, d, a) {
+        return -d * a * (a - 2) + s;
+    },
+    easeInCubic(s, d, a) {
+        return d * a * a * a + s;
+    },
+    easeOutCubic(s, d, a) {
+        a--;
+        return d * (a * a * a + 1) + s;
+    },
+    easeInOutCubic(s, d, a) {
+        a *= 2;
+        if (a < 1) {
+            return d / 2 * a * a * a + s;
+        }
+        a -= 2;
+        return d / 2 * (a * a * a + 2) + s;
+    },
+    easeInOutQuart(s, d, a) {
+        a *= 2;
+        if (a < 1) {
+            return d / 2 * a * a * a * a + s;
+        }
+        a -= 2;
+        return -d / 2 * (a * a * a * a - 2) + s;
+    },
+    easeInQuart(s, d, a) {
+        return d * a * a * a * a + s;
+    },
+    easeOutQuart(s, d, a) {
+        a--;
+        return -d * (a * a * a * a - 1) + s;
+    },
+    easeInCirc(s, d, a) {
+        return -d * (Math.sqrt(1 - a * a) - 1) + s;
+    },
+    easeOutCirc(s, d, a) {
+        a--;
+        return d * Math.sqrt(1 - a * a) + s;
+    },
+    easeInOutCirc(s, d, a) {
+        a *= 2;
+        if (a < 1) {
+            return -d / 2 * (Math.sqrt(1 - a * a) - 1) + s;
+        }
+        a -= 2;
+        return d / 2 * (Math.sqrt(1 - a * a) + 1) + s;
+    },
+    tweens: [],
+    wait: ct.u.wait
+};
+ct.tween.easeInOutQuad = ct.tween.ease;
 /* Use scripts to define frequent functions and import small libraries */
 
 var getLabel = (room) => {
 
 
     if (room.name === 'central_room') {
-    console.log(room.name)
 
         var d = new Date();
         var n = d.getSeconds();
@@ -2955,9 +3181,9 @@ var getLabel = (room) => {
         fetch(`https://jsonplaceholder.typicode.com/todos/${n}`)
             .then(response => response.json())
             .then(json => {
-                const scoreLabel = new PIXI.Text('Score: ' + json.title);
+                const scoreLabel = new PIXI.Text('These characters are generated on fly');
 
-                scoreLabel.x = 330;
+                scoreLabel.x = 230;
                 scoreLabel.y = 30;
                 scoreLabel.depth = 1000;
                 room.addChild(scoreLabel);
@@ -2973,7 +3199,7 @@ var getLabel = (room) => {
                         sex: 'men',
                         name: 'alexis anzieu',
                         slack: 'https://ssense.slack.com/archives/DDVHQF7R7',
-                        description: 'I work as devops'
+                        description: "Let's open this yellow door"
                     },
                     {
                         sex: 'women',
@@ -2983,7 +3209,7 @@ var getLabel = (room) => {
                     },
                     {
                         sex: 'women',
-                        name: 'ooopsi S',
+                        name: 'Alexis',
                         slack: 'https://ssense.slack.com/archives/DDVHQF7R7',
                         description: 'I work as Software dev'
                     }
@@ -3338,6 +3564,18 @@ for (const layer of this.tileLayers) {
             if (this === ct.room) {
     ct.place.grid = {};
 }
+/* global ct */
+
+if (!this.kill) {
+    for (var tween of ct.tween.tweens) {
+        tween.reject({
+            info: 'Room switch',
+            code: 1,
+            from: 'ct.tween'
+        });
+    }
+    ct.tween.tweens = [];
+}
 
         },
         /**
@@ -3354,7 +3592,34 @@ for (const layer of this.tileLayers) {
 ct.room = null;
 
 ct.rooms.beforeStep = function beforeStep() {
-    
+    var i = 0;
+while (i < ct.tween.tweens.length) {
+    var tween = ct.tween.tweens[i];
+    if (tween.obj.kill) {
+        tween.reject({
+            code: 2,
+            info: 'Copy is killed'
+        });
+        ct.tween.tweens.splice(i, 1);
+        continue;
+    }
+    var a = tween.timer.time / tween.duration;
+    if (a > 1) {
+        a = 1;
+    }
+    for (var field in tween.fields) {
+        var s = tween.starting[field],
+            d = tween.fields[field] - tween.starting[field];
+        tween.obj[field] = tween.curve(s, d, a);
+    }
+    if (a === 1) {
+        tween.resolve(tween.fields);
+        ct.tween.tweens.splice(i, 1);
+        continue;
+    }
+    i++;
+}
+
 };
 ct.rooms.afterStep = function afterStep() {
     
@@ -3369,7 +3634,6 @@ ct.mouse.xuiprev = ct.mouse.xui;
 ct.mouse.yuiprev = ct.mouse.yui;
 ct.mouse.pressed = ct.mouse.released = false;
 ct.inputs.registry['mouse.Wheel'] = 0;
-ct.keyboard.clear();
 if (ct.sound.follow && !ct.sound.follow.kill) {
     ct.sound.howler.pos(
         ct.sound.follow.x,
@@ -3379,6 +3643,7 @@ if (ct.sound.follow && !ct.sound.follow.kill) {
 } else if (ct.sound.manageListenerPosition) {
     ct.sound.howler.pos(ct.camera.x, ct.camera.y, ct.camera.z || 0);
 }
+ct.keyboard.clear();
 
 };
 
@@ -3451,7 +3716,7 @@ ct.rooms.templates['ninefloor'] = {
     width: 2000,
     height: 1000,
     /* JSON.parse allows for a much faster loading of big objects */
-    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1024,"y":0,"type":"rock"},{"x":1088,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":1216,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":1792,"y":500,"tx":3,"ty":3,"type":"ninefloor"},{"x":1536,"y":832,"type":"man_idle"},{"x":192,"y":192,"tx":0.2,"ty":0.2,"type":"doggy"},{"x":0,"y":512,"type":"rock"}]'),
+    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1024,"y":0,"type":"rock"},{"x":1088,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":1216,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":1792,"y":500,"tx":3,"ty":3,"type":"ninefloor"},{"x":1536,"y":832,"type":"man_idle"},{"x":0,"y":512,"type":"rock"},{"x":100,"y":320,"tx":0.2,"ty":0.2,"type":"table"},{"x":100,"y":500,"tx":0.2,"ty":0.2,"type":"table"},{"x":896,"y":-192,"type":"doggy"}]'),
     bgs: JSON.parse('[{"depth":-99999,"texture":"platformPack_tile004","extends":{}}]'),
     tiles: JSON.parse('[{"depth":-10,"tiles":[],"extends":{}}]'),
     backgroundColor: '#000000',
@@ -3476,6 +3741,26 @@ this.central_room = "central_room"
     },
     extends: {}
 }
+ct.rooms.templates.CTTRANSITIONEMPTYROOM = {
+    name: 'CTTRANSITIONEMPTYROOM',
+    width: 1024,
+    height: 1024,
+    objects: [],
+    bgs: [],
+    tiles: [],
+    onStep() {
+        void 0;
+    },
+    onDraw() {
+        void 0;
+    },
+    onLeave() {
+        void 0;
+    },
+    onCreate() {
+        void 0;
+    }
+};
 
 
 /**
@@ -3529,8 +3814,8 @@ ct.styles = {
         soundsTotal: [0][0],
         soundsError: 0,
         sounds: {},
-        registry: [{"static":{"frames":1,"shape":{"type":"rect","top":66,"bottom":0,"left":36,"right":34},"anchor":{"x":0.5,"y":0.9791666666666666}},"walk1":{"frames":1,"shape":{"type":"rect","top":68,"bottom":0,"left":39,"right":39},"anchor":{"x":0.5,"y":1}},"walk2":{"frames":1,"shape":{"type":"rect","top":96,"bottom":0,"left":48,"right":48},"anchor":{"x":0.5,"y":0.9947916666666666}},"platformPack_item001":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item002":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item003":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item006":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item005":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item004":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item007":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item008":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item009":{"frames":1,"shape":{"type":"circle","r":14},"anchor":{"x":0.5,"y":0.46875}},"platformPack_item010":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item011":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item012":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item014":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item013":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item016":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item017":{"frames":1,"shape":{"type":"circle","r":18},"anchor":{"x":0.5,"y":0.5}},"platformPack_item015":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item018":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile001":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile002":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile003":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile005":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile004":{"atlas":"./img/t0.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile006":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile008":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile009":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile010":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile012":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile007":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile014":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile013":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile015":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile016":{"atlas":"./img/t1.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile011":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile017":{"atlas":"./img/t2.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile018":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile019":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"checkout":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile020":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile022":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile024":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile026":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile023":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile027":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile025":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile028":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile031":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile029":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile030":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile033":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile032":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile034":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile035":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile036":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile038":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile039":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile037":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile040":{"atlas":"./img/t3.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile042":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile044":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile041":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile047":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile051":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile046":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile045":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile048":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile049":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile053":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile050":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile043":{"frames":1,"shape":{"type":"rect","top":-29,"bottom":64,"left":0,"right":64},"anchor":{"x":-0.005208333333333315,"y":0.005208333333333315}},"platformPack_tile056":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile055":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile054":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile057":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile058":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile052":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile061":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile059":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile060":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile065":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile062":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile064":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile063":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"man_walk":{"frames":8,"shape":{"type":"rect","top":220,"bottom":0,"left":71,"right":70},"anchor":{"x":0.5,"y":1}},"man_idle":{"frames":1,"shape":{"type":"rect","top":214,"bottom":0,"left":72,"right":70},"anchor":{"x":0.5,"y":1}},"man_back":{"frames":1,"shape":{"type":"rect","top":220,"bottom":0,"left":71,"right":69},"anchor":{"x":0.5,"y":1}},"peer_idle":{"frames":1,"shape":{"type":"rect","top":189,"bottom":0,"left":68,"right":69},"anchor":{"x":0.5,"y":1}},"doggy":{"frames":1,"shape":{"type":"rect","top":0,"bottom":698,"left":0,"right":450},"anchor":{"x":0,"y":0}},"plant":{"frames":1,"shape":{"type":"rect","top":514,"bottom":0,"left":108,"right":109},"anchor":{"x":0.4976958525345622,"y":1}}}][0],
-        atlases: [["./img/a0.json"]][0],
+        registry: [{"static":{"frames":1,"shape":{"type":"rect","top":66,"bottom":0,"left":36,"right":34},"anchor":{"x":0.5,"y":0.9791666666666666}},"walk1":{"frames":1,"shape":{"type":"rect","top":68,"bottom":0,"left":39,"right":39},"anchor":{"x":0.5,"y":1}},"walk2":{"frames":1,"shape":{"type":"rect","top":96,"bottom":0,"left":48,"right":48},"anchor":{"x":0.5,"y":0.9947916666666666}},"platformPack_item001":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item002":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item003":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item006":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item005":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item004":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item007":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item008":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item009":{"frames":1,"shape":{"type":"circle","r":14},"anchor":{"x":0.5,"y":0.46875}},"platformPack_item010":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item011":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item012":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item014":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item013":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item016":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item017":{"frames":1,"shape":{"type":"circle","r":18},"anchor":{"x":0.5,"y":0.5}},"platformPack_item015":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item018":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile001":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile002":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile003":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile005":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile004":{"atlas":"./img/t0.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile006":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile008":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile009":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile010":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile012":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile007":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile014":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile013":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile015":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile016":{"atlas":"./img/t1.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile011":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile017":{"atlas":"./img/t2.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile018":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile019":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"checkout":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile020":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile022":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile024":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile026":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile023":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile027":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile025":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile028":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile031":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile029":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile030":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile033":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile032":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile034":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile035":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile036":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile038":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile039":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile037":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile040":{"atlas":"./img/t3.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile042":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile044":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile041":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile047":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile051":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile046":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile045":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile048":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile049":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile053":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile050":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile043":{"frames":1,"shape":{"type":"rect","top":-29,"bottom":64,"left":0,"right":64},"anchor":{"x":-0.005208333333333315,"y":0.005208333333333315}},"platformPack_tile056":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile055":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile054":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile057":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile058":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile052":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile061":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile059":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile060":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile065":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile062":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile064":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile063":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"man_walk":{"frames":8,"shape":{"type":"rect","top":220,"bottom":0,"left":71,"right":70},"anchor":{"x":0.5,"y":1}},"man_idle":{"frames":1,"shape":{"type":"rect","top":214,"bottom":0,"left":72,"right":70},"anchor":{"x":0.5,"y":1}},"man_back":{"frames":1,"shape":{"type":"rect","top":220,"bottom":0,"left":71,"right":69},"anchor":{"x":0.5,"y":1}},"peer_idle":{"frames":1,"shape":{"type":"rect","top":189,"bottom":0,"left":68,"right":69},"anchor":{"x":0.5,"y":1}},"doggy":{"frames":1,"shape":{"type":"rect","top":0,"bottom":698,"left":0,"right":450},"anchor":{"x":0,"y":0}},"plant":{"frames":1,"shape":{"type":"rect","top":514,"bottom":0,"left":108,"right":109},"anchor":{"x":0.4976958525345622,"y":1}},"table":{"frames":1,"shape":{"type":"rect","top":0,"bottom":640,"left":0,"right":1319},"anchor":{"x":0,"y":0}},"SSENSE-Office-6_(1)":{"frames":1,"shape":{"type":"rect","top":0,"bottom":1033,"left":0,"right":1550},"anchor":{"x":0,"y":0}}}][0],
+        atlases: [["./img/a0.json","./img/a1.json"]][0],
         skelRegistry: [{}][0],
         fetchImage(url, callback) {
             loader.add(url, url);
@@ -3547,6 +3832,7 @@ ct.styles = {
             // filled by IDE and catmods. As usual, atlases are splitted here.
             PIXI.Loader.shared
 .add('./img/a0.json')
+.add('./img/a1.json')
 .add('./img/t0.png')
 .add('./img/t1.png')
 .add('./img/t2.png')
@@ -3677,6 +3963,122 @@ Object.defineProperty(ct.types.Tilemap.prototype, 'enableCollisions', {
     }
 });
 ct.mouse.setupListeners();
+(function ctSplashscreen() {
+    ct.splashscreen = {
+        slides: [[{"texture":"SSENSE-Office-6_(1)","effect":"zoomIn","fill":true}]][0]
+    };
+    const {slides} = ct.splashscreen,
+          [slideDuration] = [4000],
+          [transitionDuration] = [1000],
+          backgroundColor = '#000000',
+          transitionColor = ct.u.hexToPixi('#000000'),
+          [skippable] = [true];
+
+    const oldStartingName = ct.rooms.starting;
+    const oldRoom = ct.rooms.templates[oldStartingName];
+
+    let currentIndex = 0,
+        currentLogo = null;
+
+    const advance = function advance() {
+        currentLogo = null;
+        currentIndex++;
+        if (currentIndex === slides.length) {
+            ct.rooms.starting = oldStartingName;
+            ct.rooms.switch(oldStartingName);
+            return;
+        }
+        ct.rooms.switch('CTSPLASHSCREEN');
+    };
+    const createSlide = function createSlide() {
+        const ind = currentIndex;
+        const slide = slides[ind];
+        currentLogo = new PIXI.Sprite(ct.res.getTexture(slide.texture, 0));
+        currentLogo.x = ct.camera.width / 2;
+        currentLogo.y = ct.camera.height / 2;
+        currentLogo.anchor.x = currentLogo.anchor.y = 0.5;
+        currentLogo.scale.x = currentLogo.scale.y =
+            Math.min(ct.camera.width / currentLogo.width, ct.camera.height / currentLogo.height);
+        if (!slide.fill) {
+            currentLogo.scale.x *= 0.5;
+            currentLogo.scale.y *= 0.5;
+        }
+        if (slide.effect === 'zoomIn') {
+            const targetScale = currentLogo.scale.x;
+            currentLogo.scale.x = currentLogo.scale.y = targetScale * 0.9;
+            ct.tween.add({
+                obj: currentLogo.scale,
+                fields: {
+                    x: targetScale,
+                    y: targetScale
+                },
+                duration: slideDuration,
+                silent: true
+            });
+        } else if (slide.effect === 'zoomOut') {
+            ct.tween.add({
+                obj: currentLogo.scale,
+                fields: {
+                    x: currentLogo.scale.x * 0.9,
+                    y: currentLogo.scale.x * 0.9
+                },
+                duration: slideDuration,
+                silent: true
+            });
+        }
+        ct.room.addChild(currentLogo);
+        ct.transition.fadeIn(transitionDuration, transitionColor);
+        ct.u.wait(slideDuration - transitionDuration)
+        .then(() => ct.transition.fadeOut(transitionDuration, transitionColor))
+        .then(() => {
+            advance();
+        })
+        .catch(() => void 0);
+    };
+
+    ct.inputs.addAction('CTSPLASHSCREENAnyInput', [{
+        code: 'gamepad.Any',
+        multiplier: 1
+    }, {
+        code: 'mouse.Left',
+        multiplier: 1
+    }, {
+        code: 'touch.Any',
+        multiplier: 1
+    }, {
+        code: 'keyboard.Escape',
+        multiplier: 1
+    }, {
+        code: 'keyboard.Space',
+        multiplier: 1
+    }]);
+
+    ct.rooms.templates.CTSPLASHSCREEN = {
+        name: 'CTSPLASHSCREEN',
+        backgroundColor: backgroundColor,
+        width: oldRoom.width,
+        height: oldRoom.height,
+        objects: [],
+        bgs: [],
+        tiles: [],
+        onCreate: function onCreate() {
+            createSlide();
+        },
+        onDraw: function onDraw() {
+            void 0;
+        },
+        onLeave: function onLeave() {
+            void 0;
+        },
+        onStep: function onStep() {
+            if (skippable && ct.actions.CTSPLASHSCREENAnyInput.pressed) {
+                advance();
+            }
+        }
+    };
+
+    ct.rooms.starting = 'CTSPLASHSCREEN';
+})();
 
             PIXI.Ticker.shared.add(ct.loop);
             ct.rooms.forceSwitch(ct.rooms.starting);
@@ -4414,7 +4816,249 @@ ct.types.templates["plant"] = {
 }
 };
 ct.types.list['plant'] = [];
-    
+ct.types.templates["table"] = {
+    depth: 0,
+    texture: "table",
+    onStep: function () {
+        this.move();
+    },
+    onDraw: function () {
+        
+    },
+    onDestroy: function () {
+        
+    },
+    onCreate: function () {
+        
+    },
+    extends: {
+    "ctype": "Solid"
+}
+};
+ct.types.list['table'] = [];
+    /* eslint-disable max-lines-per-function */
+(function ctTransitionTypes() {
+    const devourer = () => {
+        void 0;
+    };
+    ct.types.templates.CTTRANSITION_FADE = {
+        onStep() {
+            void 0;
+        },
+        onDraw() {
+            void 0;
+        },
+        onDestroy() {
+            ct.rooms.remove(this.room);
+        },
+        onCreate() {
+            this.tex = -1;
+            this.overlay = new PIXI.Graphics();
+            this.overlay.beginFill(this.color);
+            this.overlay.drawRect(0, 0, ct.camera.width + 1, ct.camera.height + 1);
+            this.overlay.endFill();
+            this.overlay.alpha = this.in ? 1 : 0;
+            this.addChild(this.overlay);
+            this.promise = ct.tween.add({
+                obj: this.overlay,
+                fields: {
+                    alpha: this.in ? 0 : 1
+                },
+                duration: this.duration,
+                silent: true
+            }).then(() => {
+                this.kill = true;
+            });
+        }
+    };
+    ct.types.templates.CTTRANSITION_SCALE = {
+        onStep() {
+            void 0;
+        },
+        onDraw() {
+            void 0;
+        },
+        onDestroy() {
+            ct.rooms.remove(this.room);
+        },
+        onCreate() {
+            this.tex = -1;
+            this.overlay = new PIXI.Graphics();
+            this.overlay.beginFill(this.color);
+            this.overlay.drawRect(0, 0, ct.camera.width + 1, ct.camera.height + 1);
+            this.overlay.endFill();
+            this.overlay.alpha = this.in ? 1 : 0;
+            this.addChild(this.overlay);
+            var sourceX = ct.camera.scale.x,
+                sourceY = ct.camera.scale.y,
+                endX = this.in ? sourceX : sourceX * this.scaling,
+                endY = this.in ? sourceY : sourceY * this.scaling,
+                startX = this.in ? sourceX * this.scaling : sourceX,
+                startY = this.in ? sourceY * this.scaling : sourceY;
+            ct.camera.scale.x = startX;
+            ct.camera.scale.y = startY;
+            this.promise = ct.tween.add({
+                obj: ct.camera.scale,
+                fields: {
+                    x: endX,
+                    y: endY
+                },
+                duration: this.duration,
+                silent: true
+            }).then(() => {
+                ct.camera.scale.x = sourceX;
+                ct.camera.scale.y = sourceY;
+                this.kill = true;
+            });
+            ct.tween.add({
+                obj: this.overlay,
+                fields: {
+                    alpha: this.in ? 0 : 1
+                },
+                duration: this.duration,
+                silent: true
+            })
+            .catch(devourer);
+        }
+    };
+    ct.types.templates.CTTRANSITION_SLIDE = {
+        onStep() {
+            void 0;
+        },
+        onDraw() {
+            void 0;
+        },
+        onDestroy() {
+            ct.rooms.remove(this.room);
+        },
+        onCreate() {
+            this.tex = -1;
+            this.overlay = new PIXI.Graphics();
+            this.overlay.beginFill(this.color);
+            this.overlay.drawRect(0, 0, (ct.camera.width + 1), (ct.camera.height + 1));
+            this.overlay.endFill();
+
+            if (this.endAt === 'left' || this.endAt === 'right') {
+                this.scale.x = this.in ? 1 : 0;
+                this.promise = ct.tween.add({
+                    obj: this.scale,
+                    fields: {
+                        x: this.in ? 0 : 1
+                    },
+                    duration: this.duration,
+                    curve: ct.tween.easeOutQuart,
+                    silent: true
+                }).then(() => {
+                    this.kill = true;
+                });
+            } else {
+                this.scale.y = this.in ? 1 : 0;
+                this.promise = ct.tween.add({
+                    obj: this.scale,
+                    fields: {
+                        y: this.in ? 0 : 1
+                    },
+                    duration: this.duration,
+                    curve: ct.tween.easeOutQuart,
+                    silent: true
+                }).then(() => {
+                    this.kill = true;
+                });
+            }
+            if (!this.in && this.endAt === 'left') {
+                this.x = (ct.camera.width + 1);
+                ct.tween.add({
+                    obj: this,
+                    fields: {
+                        x: 0
+                    },
+                    duration: this.duration,
+                    curve: ct.tween.easeOutQuart,
+                    silent: true
+                })
+                .catch(devourer);
+            }
+            if (!this.in && this.endAt === 'top') {
+                this.y = (ct.camera.height + 1);
+                ct.tween.add({
+                    obj: this,
+                    fields: {
+                        y: 0
+                    },
+                    duration: this.duration,
+                    curve: ct.tween.easeOutQuart,
+                    silent: true
+                })
+                .catch(devourer);
+            }
+            if (this.in && this.endAt === 'right') {
+                ct.tween.add({
+                    obj: this,
+                    fields: {
+                        x: (ct.camera.width + 1)
+                    },
+                    duration: this.duration,
+                    curve: ct.tween.easeOutQuart,
+                    silent: true
+                })
+                .catch(devourer);
+            }
+            if (this.in && this.endAt === 'bottom') {
+                ct.tween.add({
+                    obj: this,
+                    fields: {
+                        y: (ct.camera.height + 1)
+                    },
+                    duration: this.duration,
+                    curve: ct.tween.easeOutQuart,
+                    silent: true
+                })
+                .catch(devourer);
+            }
+
+            this.addChild(this.overlay);
+        }
+    };
+
+    ct.types.templates.CTTRANSITION_CIRCLE = {
+        onStep() {
+            void 0;
+        },
+        onDraw() {
+            void 0;
+        },
+        onDestroy() {
+            ct.rooms.remove(this.room);
+        },
+        onCreate() {
+            this.tex = -1;
+            this.x = (ct.camera.width + 1) / 2;
+            this.y = (ct.camera.height + 1) / 2;
+            this.overlay = new PIXI.Graphics();
+            this.overlay.beginFill(this.color);
+            this.overlay.drawCircle(
+                0,
+                0,
+                ct.u.pdc(0, 0, (ct.camera.width + 1) / 2, (ct.camera.height + 1) / 2)
+            );
+            this.overlay.endFill();
+            this.addChild(this.overlay);
+            this.scale.x = this.scale.y = this.in ? 0 : 1;
+            this.promise = ct.tween.add({
+                obj: this.scale,
+                fields: {
+                    x: this.in ? 1 : 0,
+                    y: this.in ? 1 : 0
+                },
+                duration: this.duration,
+                silent: true
+            }).then(() => {
+                this.kill = true;
+            });
+        }
+    };
+})();
+
 
     ct.types.beforeStep = function beforeStep() {
         
