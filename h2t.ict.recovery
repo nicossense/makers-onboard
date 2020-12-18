@@ -10,18 +10,6 @@ libs:
   keyboard.polyfill: {}
   sound.howler: {}
   keyboard: {}
-  transition: {}
-  tween: {}
-  splashscreen:
-    slideDuration: 4500
-    transitionDuration: 1500
-    backgroundColor: '#000000'
-    transitionColor: '#000000'
-    skippable: true
-    slides:
-      - texture@@texture: 856b29ac-08ac-471f-99c2-dd8e5d58d74c
-        effect: zoomIn
-        fill: true
 textures:
   - name: static
     untill: 0
@@ -1807,7 +1795,6 @@ textures:
     padding: 1
     source: >-
       /Users/alexis.anzieu/Downloads/kenney_simplifiedplatformer/PNG/Tiles/platformPack_tile045.png
-    lastmod: 1608317034691
   - name: platformPack_tile048
     untill: 0
     grid:
@@ -2296,16 +2283,16 @@ textures:
     offy: 1024
     origname: i07257070-6452-475e-8e6d-a15253d3416c.png
     shape: rect
-    left: 96
-    right: 96
-    top: 256
+    left: 71
+    right: 70
+    top: 220
     bottom: 0
     uid: 07257070-6452-475e-8e6d-a15253d3416c
     padding: 0
     source: >-
       /Users/alexis.anzieu/Downloads/kenney_tooncharacters1/Male
       adventurer/Tilesheet/character_maleAdventurer_sheetHD.png
-    lastmod: 1608317043790
+    lastmod: 1600606948137
     r: 96
     stripPoints:
       - x: 0
@@ -2338,16 +2325,16 @@ textures:
     offy: 0
     origname: i0eafe463-12ad-4cd0-a2b4-c6cf7f3888d5.png
     shape: rect
-    left: 96
-    right: 96
-    top: 256
+    left: 72
+    right: 70
+    top: 214
     bottom: 0
     uid: 0eafe463-12ad-4cd0-a2b4-c6cf7f3888d5
     padding: 1
     source: >-
       /Users/alexis.anzieu/Downloads/kenney_tooncharacters1/Male
       adventurer/Tilesheet/character_maleAdventurer_sheetHD.png
-    lastmod: 1608317032698
+    lastmod: 1600606932095
   - name: man_back
     untill: 1
     grid:
@@ -2362,20 +2349,20 @@ textures:
     imgHeight: 1280
     width: 192
     height: 256
-    offx: 0
+    offx: -2
     offy: 259
     origname: i655fb7eb-81c5-4403-a0f4-8bd8f4024e14.png
     shape: rect
-    left: 96
-    right: 96
-    top: 256
+    left: 71
+    right: 69
+    top: 220
     bottom: 0
     uid: 655fb7eb-81c5-4403-a0f4-8bd8f4024e14
     padding: 4
     source: >-
       /Users/alexis.anzieu/Downloads/kenney_tooncharacters1/Male
       adventurer/Tilesheet/character_maleAdventurer_sheetHD.png
-    lastmod: 1608317026421
+    lastmod: 1600606916231
   - name: peer_idle
     untill: 0
     grid:
