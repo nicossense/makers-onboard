@@ -1,4 +1,4 @@
-/* Made with ct.js http://ctjs.rocks/ */
+/*! Made with ct.js http://ctjs.rocks/ */
 
 const deadPool = []; // a pool of `kill`-ed copies for delaying frequent garbage collection
 const copyTypeSymbol = Symbol('I am a ct.js copy');
@@ -59,7 +59,7 @@ const ct = {
      * ct.js version in form of a string `X.X.X`.
      * @type {string}
      */
-    version: '1.4.2',
+    version: '1.5.0',
     meta: [{"name":"onboardgaming","author":"alexis anzieu","site":"","version":"0.0.0"}][0],
     main: {
         fpstick: 0,
@@ -322,6 +322,12 @@ ct.u = {
     gameToUiCoord(x, y) {
         return ct.camera.gameToUiCoord(x, y);
     },
+    hexToPixi(hex) {
+        return Number('0x' + hex.slice(1));
+    },
+    pixiToHex(pixi) {
+        return '#' + (pixi).toString(16).padStart(6, 0);
+    },
     /**
      * Tests whether a given point is inside the given rectangle
      * (it can be either a copy or an array).
@@ -467,6 +473,8 @@ ct.u.ext(ct.u, {// make aliases
         ct.deltaUi = PIXI.Ticker.shared.elapsedMS / (1000 / (PIXI.Ticker.shared.maxFPS || 60));
         ct.inputs.updateActions();
         ct.timer.updateTimers();
+        ct.place.debugTraceGraphics.clear();
+
         for (let i = 0, li = ct.stack.length; i < li; i++) {
             ct.types.beforeStep.apply(ct.stack[i]);
             ct.stack[i].onStep.apply(ct.stack[i]);
@@ -517,7 +525,7 @@ ct.u.ext(ct.u, {// make aliases
             item.onDraw.apply(item);
             ct.rooms.afterDraw.apply(item);
         }
-
+        
         ct.main.fpstick++;
         if (ct.rooms.switching) {
             ct.rooms.forceSwitch();
@@ -721,28 +729,77 @@ ct.inputs.addAction('MoveUp', [{"code":"keyboard.KeyW"},{"code":"keyboard.ArrowU
 ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.ArrowDown"}]);
 
 
+/**
+ * @typedef ICtPlaceRectangle
+ * @property {number} [x1] The left side of the rectangle.
+ * @property {number} [y1] The upper side of the rectangle.
+ * @property {number} [x2] The right side of the rectangle.
+ * @property {number} [y2] The bottom side of the rectangle.
+ * @property {number} [x] The left side of the rectangle.
+ * @property {number} [y] The upper side of the rectangle.
+ * @property {number} [width] The right side of the rectangle.
+ * @property {number} [height] The bottom side of the rectangle.
+ */
+/**
+ * @typedef ICtPlaceLineSegment
+ * @property {number} x1 The horizontal coordinate of the starting point of the ray.
+ * @property {number} y1 The vertical coordinate of the starting point of the ray.
+ * @property {number} x2 The horizontal coordinate of the ending point of the ray.
+ * @property {number} y2 The vertical coordinate of the ending point of the ray.
+ */
+/**
+ * @typedef ICtPlaceCircle
+ * @property {number} x The horizontal coordinate of the circle's center.
+ * @property {number} y The vertical coordinate of the circle's center.
+ * @property {number} radius The radius of the circle.
+ */
 /* eslint-disable no-underscore-dangle */
 /* global SSCD */
 /* eslint prefer-destructuring: 0 */
 (function ctPlace(ct) {
     const circlePrecision = 16,
           twoPi = Math.PI * 0;
+    const debugMode = [false][0];
+    // eslint-disable-next-line max-lines-per-function
     var getSSCDShape = function (copy) {
         const {shape} = copy,
               position = new SSCD.Vector(copy.x, copy.y);
         if (shape.type === 'rect') {
             if (copy.rotation === 0) {
-                position.x -= copy.scale.x > 0 ? (shape.left * copy.scale.x) : (-copy.scale.x * shape.right);
-                position.y -= copy.scale.y > 0 ? (shape.top * copy.scale.y) : (-shape.bottom * copy.scale.y);
+                position.x -= copy.scale.x > 0 ?
+                    (shape.left * copy.scale.x) :
+                    (-copy.scale.x * shape.right);
+                position.y -= copy.scale.y > 0 ?
+                    (shape.top * copy.scale.y) :
+                    (-shape.bottom * copy.scale.y);
                 return new SSCD.Rectangle(
                     position,
-                    new SSCD.Vector(Math.abs((shape.left + shape.right) * copy.scale.x), Math.abs((shape.bottom + shape.top) * copy.scale.y))
+                    new SSCD.Vector(
+                        Math.abs((shape.left + shape.right) * copy.scale.x),
+                        Math.abs((shape.bottom + shape.top) * copy.scale.y)
+                    )
                 );
             }
-            const upperLeft = ct.u.rotate(-shape.left * copy.scale.x, -shape.top * copy.scale.y, copy.rotation),
-                  bottomLeft = ct.u.rotate(-shape.left * copy.scale.x, shape.bottom * copy.scale.y, copy.rotation),
-                  bottomRight = ct.u.rotate(shape.right * copy.scale.x, shape.bottom * copy.scale.y, copy.rotation),
-                  upperRight = ct.u.rotate(shape.right * copy.scale.x, -shape.top * copy.scale.y, copy.rotation);
+            const upperLeft = ct.u.rotate(
+                -shape.left * copy.scale.x,
+                -shape.top * copy.scale.y,
+                copy.rotation
+            );
+            const bottomLeft = ct.u.rotate(
+                -shape.left * copy.scale.x,
+                shape.bottom * copy.scale.y,
+                copy.rotation
+            );
+            const bottomRight = ct.u.rotate(
+                shape.right * copy.scale.x,
+                shape.bottom * copy.scale.y,
+                copy.rotation
+            );
+            const upperRight = ct.u.rotate(
+                shape.right * copy.scale.x,
+                -shape.top * copy.scale.y,
+                copy.rotation
+            );
             return new SSCD.LineStrip(position, [
                 new SSCD.Vector(upperLeft[0], upperLeft[1]),
                 new SSCD.Vector(bottomLeft[0], bottomLeft[1]),
@@ -772,7 +829,11 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
             const vertices = [];
             if (copy.rotation !== 0) {
                 for (const point of shape.points) {
-                    const [x, y] = ct.u.rotate(point.x * copy.scale.x, point.y * copy.scale.y, copy.rotation);
+                    const [x, y] = ct.u.rotate(
+                        point.x * copy.scale.x,
+                        point.y * copy.scale.y,
+                        copy.rotation
+                    );
                     vertices.push(new SSCD.Vector(x, y));
                 }
             } else {
@@ -784,8 +845,14 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
         }
         if (shape.type === 'line') {
             return new SSCD.Line(
-                new SSCD.Vector(copy.x + shape.x1 * copy.scale.x, copy.y + shape.y1 * copy.scale.y),
-                new SSCD.Vector(copy.x + (shape.x2 - shape.x1) * copy.scale.x, copy.y + (shape.y2 - shape.y1) * copy.scale.y)
+                new SSCD.Vector(
+                    copy.x + shape.x1 * copy.scale.x,
+                    copy.y + shape.y1 * copy.scale.y
+                ),
+                new SSCD.Vector(
+                    (shape.x2 - shape.x1) * copy.scale.x,
+                    (shape.y2 - shape.y1) * copy.scale.y
+                )
             );
         }
         return new SSCD.Circle(position, 0);
@@ -818,39 +885,82 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
         /**
          * Applied to copies in the debug mode. Draws a collision shape
          * @this Copy
+         * @param {boolean} [absolute] Whether to use room coordinates
+         * instead of coordinates relative to the copy.
          * @returns {void}
          */
-        drawDebugGraphic() {
+        drawDebugGraphic(absolute) {
             const shape = this._shape || getSSCDShape(this);
             const g = this.$cDebugCollision;
-            const color = this.$cHadCollision ? 0x00ff00 : 0x0066ff;
+            let color = this instanceof Copy ? 0x0066ff : 0x00ffff;
+            if (this.$cHadCollision) {
+                color = 0x00ff00;
+            }
+            g.lineStyle(2, color);
             if (shape instanceof SSCD.Rectangle) {
                 const pos = shape.get_position(),
                       size = shape.get_size();
-                g.lineStyle(2, color)
-                .drawRect(pos.x - this.x, pos.y - this.y, size.x, size.y);
-            } else if (shape instanceof SSCD.LineStrip) {
-                g.lineStyle(2, color)
-                .moveTo(shape.__points[0].x, shape.__points[0].y);
-                for (let i = 1; i < shape.__points.length; i++) {
-                    g.lineTo(shape.__points[i].x, shape.__points[i].y);
+                g.beginFill(color, 0.1);
+                if (!absolute) {
+                    g.drawRect(pos.x - this.x, pos.y - this.y, size.x, size.y);
+                } else {
+                    g.drawRect(pos.x, pos.y, size.x, size.y);
                 }
-            } else if (shape instanceof SSCD.Circle) {
-                g.lineStyle(2, color)
-                .drawCircle(0, 0, shape.get_radius());
+                g.endFill();
+            } else if (shape instanceof SSCD.LineStrip) {
+                if (!absolute) {
+                    g.moveTo(shape.__points[0].x, shape.__points[0].y);
+                    for (let i = 1; i < shape.__points.length; i++) {
+                        g.lineTo(shape.__points[i].x, shape.__points[i].y);
+                    }
+                } else {
+                    g.moveTo(shape.__points[0].x + this.x, shape.__points[0].y + this.y);
+                    for (let i = 1; i < shape.__points.length; i++) {
+                        g.lineTo(shape.__points[i].x + this.x, shape.__points[i].y + this.y);
+                    }
+                }
+            } else if (shape instanceof SSCD.Circle && shape.get_radius() > 0) {
+                g.beginFill(color, 0.1);
+                if (!absolute) {
+                    g.drawCircle(0, 0, shape.get_radius());
+                } else {
+                    g.drawCircle(this.x, this.y, shape.get_radius());
+                }
+                g.endFill();
+            } else if (shape instanceof SSCD.Line) {
+                if (!absolute) {
+                    g.moveTo(
+                        shape.__position.x,
+                        shape.__position.y
+                    ).lineTo(
+                        shape.__position.x + shape.__dest.x,
+                        shape.__position.y + shape.__dest.y
+                    );
+                } else {
+                    const p1 = shape.get_p1();
+                    const p2 = shape.get_p2();
+                    g.moveTo(p1.x, p1.y)
+                    .lineTo(p2.x, p2.y);
+                }
+            } else if (!absolute) { // Treat as a point
+                g.moveTo(-16, -16)
+                .lineTo(16, 16)
+                .moveTo(-16, 16)
+                .lineTo(16, -16);
             } else {
-                g.lineStyle(4, 0xff0000)
-                .moveTo(-40, -40)
-                .lineTo(40, 40)
-                .moveTo(-40, 40)
-                .lineTo(40, -40);
+                g.moveTo(-16 + this.x, -16 + this.y)
+                .lineTo(16 + this.x, 16 + this.y)
+                .moveTo(-16 + this.x, 16 + this.y)
+                .lineTo(16 + this.x, -16 + this.y);
             }
         },
         drawDebugTileGraphic(tile) {
             const g = this.$cDebugCollision;
-            const color = 0x0066ff;
+            const color = 0x9966ff;
             g.lineStyle(2, color)
-            .drawRect(tile.x - this.x, tile.y - this.y, tile.width, tile.height);
+            .beginFill(color, 0.1)
+            .drawRect(tile.x - this.x, tile.y - this.y, tile.width, tile.height)
+            .endFill();
         },
         collide(c1, c2) {
             // ct.place.collide(<c1: Copy, c2: Copy>)
@@ -876,16 +986,19 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
         },
         /**
          * Determines if the place in (x,y) is occupied.
-         * Optionally can take 'ctype' as a filter for obstackles' collision group (not shape type)
+         * Optionally can take 'ctype' as a filter for obstackles' collision group (not shape type).
          *
-         * @param {Copy} me The object to check collisions on
+         * @param {Copy} me The object to check collisions on.
          * @param {number} [x] The x coordinate to check, as if `me` was placed there.
          * @param {number} [y] The y coordinate to check, as if `me` was placed there.
-         * @param {String} [ctype] The collision group to check against
-         * @param {Boolean} [multiple=false] If it is true, the function will return an array of all the collided objects.
-         *                                   If it is false (default), it will return a copy with the first collision
-         * @returns {Copy|Array<Copy>} The collided copy, or an array of all the detected collisions (if `multiple` is `true`)
+         * @param {String} [ctype] The collision group to check against.
+         * @param {Boolean} [multiple=false] If it is true, the function will return
+         * an array of all the collided objects. If it is false (default), it will return
+         * a copy with the first collision.
+         * @returns {Copy|Array<Copy>} The collided copy, or an array of
+         * all the detected collisions (if `multiple` is `true`)
          */
+        // eslint-disable-next-line complexity
         occupied(me, x, y, ctype, multiple) {
             var oldx = me.x,
                 oldy = me.y,
@@ -930,7 +1043,9 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
                                 }
                                 return array[i];
                             }
-                            results.push(array[i]);
+                            if (!results.includes(array[i])) {
+                                results.push(array[i]);
+                            }
                         }
                     }
                 }
@@ -983,7 +1098,10 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
                     continue;
                 }
                 for (let i = 0, l = array.length; i < l; i++) {
-                    if (array[i].type === type && array[i] !== me && ct.place.collide(me, array[i])) {
+                    if (array[i].type === type &&
+                        array[i] !== me &&
+                        ct.place.collide(me, array[i])
+                    ) {
                         if (!multiple) {
                             if (oldx !== me.x || oldy !== me.y) {
                                 me._shape = shapeCashed;
@@ -1086,6 +1204,41 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
             }
             return false;
         },
+        enableTilemapCollisions(tilemap, ctype) {
+            const cgroup = ctype || tilemap.ctype;
+            if (tilemap.addedCollisions) {
+                throw new Error('[ct.place] The tilemap already has collisions enabled.');
+            }
+            for (let i = 0, l = tilemap.tiles.length; i < l; i++) {
+                const t = tilemap.tiles[i];
+                // eslint-disable-next-line no-underscore-dangle
+                t._shape = new SSCD.Rectangle(
+                    new SSCD.Vector(t.x, t.y),
+                    new SSCD.Vector(t.width, t.height)
+                );
+                t.ctype = cgroup;
+                t.$chashes = ct.place.getHashes(t);
+                /* eslint max-depth: 0 */
+                for (const hash of t.$chashes) {
+                    if (!(hash in ct.place.tileGrid)) {
+                        ct.place.tileGrid[hash] = [t];
+                    } else {
+                        ct.place.tileGrid[hash].push(t);
+                    }
+                }
+                t.depth = tilemap.depth;
+            }
+            if (debugMode) {
+                for (let i = 0; i < tilemap.tiles.length; i++) {
+                    const pixiTile = tilemap.pixiTiles[i],
+                          logicTile = tilemap.tiles[i];
+                    pixiTile.$cDebugCollision = new PIXI.Graphics();
+                    ct.place.drawDebugTileGraphic.apply(pixiTile, [logicTile]);
+                    pixiTile.addChild(pixiTile.$cDebugCollision);
+                }
+            }
+            tilemap.addedCollisions = true;
+        },
         moveAlong(me, dir, length, ctype, precision) {
             if (typeof ctype === 'number') {
                 precision = ctype;
@@ -1122,25 +1275,42 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
             };
             precision = Math.abs(precision || 1);
             while (Math.abs(dx) > precision) {
-                if (ct.place.free(me, me.x + Math.sign(dx) * precision, me.y, ctype) &&
-                    !ct.place.tile(me, me.x + Math.sign(dx) * precision, me.y, ctype)
-                ) {
+                const occupied =
+                    ct.place.occupied(me, me.x + Math.sign(dx) * precision, me.y, ctype) ||
+                    ct.place.tile(me, me.x + Math.sign(dx) * precision, me.y, ctype);
+                if (!occupied) {
                     me.x += Math.sign(dx) * precision;
                     dx -= Math.sign(dx) * precision;
                 } else {
-                    obstacles.x = true;
+                    obstacles.x = occupied;
                     break;
                 }
             }
             while (Math.abs(dy) > precision) {
-                if (ct.place.free(me, me.x, me.y + Math.sign(dy) * precision, ctype) &&
-                    !ct.place.tile(me, me.x, me.y + Math.sign(dy) * precision, ctype)
-                ) {
+                const occupied =
+                    ct.place.occupied(me, me.x, me.y + Math.sign(dy) * precision, ctype) ||
+                    ct.place.tile(me, me.x, me.y + Math.sign(dy) * precision, ctype);
+                if (!occupied) {
                     me.y += Math.sign(dy) * precision;
                     dy -= Math.sign(dy) * precision;
                 } else {
-                    obstacles.y = true;
+                    obstacles.y = occupied;
                     break;
+                }
+            }
+            // A fraction of precision may be left but completely reachable; jump to this point.
+            if (Math.abs(dx) < precision) {
+                if (ct.place.free(me, me.x + dx, me.y, ctype) &&
+                    !ct.place.tile(me, me.x + dx, me.y, ctype)
+                ) {
+                    me.x += dx;
+                }
+            }
+            if (Math.abs(dy) < precision) {
+                if (ct.place.free(me, me.x, me.y + dy, ctype) &&
+                    !ct.place.tile(me, me.x, me.y + dy, ctype)
+                ) {
+                    me.y += dy;
                 }
             }
             if (!obstacles.x && !obstacles.y) {
@@ -1189,6 +1359,214 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
                 }
             }
         },
+        traceCustom(shape, oversized, cgroup, getAll) {
+            const copies = [];
+            if (!oversized) {
+                if (debugMode) {
+                    shape.$cDebugCollision = ct.place.debugTraceGraphics;
+                    ct.place.drawDebugGraphic.apply(shape, [true]);
+                }
+                return ct.place.occupied(shape, cgroup, getAll);
+            }
+            for (var i in ct.stack) {
+                if (!cgroup || ct.stack[i].ctype === cgroup) {
+                    if (ct.place.collide(shape, ct.stack[i])) {
+                        if (getAll) {
+                            copies.push(ct.stack[i]);
+                        } else {
+                            if (debugMode) {
+                                shape.$cDebugCollision = ct.place.debugTraceGraphics;
+                                ct.place.drawDebugGraphic.apply(shape, [true]);
+                            }
+                            return ct.stack[i];
+                        }
+                    }
+                }
+            }
+            if (debugMode) {
+                shape.$cDebugCollision = ct.place.debugTraceGraphics;
+                ct.place.drawDebugGraphic.apply(shape, [true]);
+            }
+            return copies;
+        },
+        /**
+         * Tests for intersections with a line segment.
+         * If `getAll` is set to `true`, returns all the copies that intersect
+         * the line segment; otherwise, returns the first one that fits the conditions.
+         *
+         * @param {ICtPlaceLineSegment} line An object that describes the line segment.
+         * @param {string} [ctype] An optional collision group to trace against.
+         * If omitted, will trace through all the copies in the current room.
+         * @param {boolean} [getAll] Whether to return all the intersections (true),
+         * or return the first one.
+         * @returns {Copy|Array<Copy>}
+         */
+        traceLine(line, cgroup, getAll) {
+            let oversized = false;
+            if (Math.abs(line.x1 - line.x2) > ct.place.gridX) {
+                oversized = true;
+            } else if (Math.abs(line.y1 - line.y2) > ct.place.gridY) {
+                oversized = true;
+            }
+            const shape = {
+                x: line.x1,
+                y: line.y1,
+                scale: {
+                    x: 1, y: 1
+                },
+                rotation: 0,
+                shape: {
+                    type: 'line',
+                    x1: 0,
+                    y1: 0,
+                    x2: line.x2 - line.x1,
+                    y2: line.y2 - line.y1
+                }
+            };
+            const result = ct.place.traceCustom(shape, oversized, cgroup, getAll);
+            if (getAll) {
+                // An approximate sorting by distance
+                result.sort(function sortCopies(a, b) {
+                    var dist1, dist2;
+                    dist1 = ct.u.pdc(line.x1, line.y1, a.x, a.y);
+                    dist2 = ct.u.pdc(line.x1, line.y1, b.x, b.y);
+                    return dist1 - dist2;
+                });
+            }
+            return result;
+        },
+        /**
+         * Tests for intersections with a filled rectangle.
+         * If `getAll` is set to `true`, returns all the copies that intersect
+         * the rectangle; otherwise, returns the first one that fits the conditions.
+         *
+         * @param {ICtPlaceRectangle} rect An object that describes the line segment.
+         * @param {string} [ctype] An optional collision group to trace against.
+         * If omitted, will trace through all the copies in the current room.
+         * @param {boolean} [getAll] Whether to return all the intersections (true),
+         * or return the first one.
+         * @returns {Copy|Array<Copy>}
+         */
+        traceRect(rect, cgroup, getAll) {
+            let oversized = false;
+            rect = { // Copy the object
+                ...rect
+            };
+            // Turn x1, x2, y1, y2 into x, y, width, and height
+            if ('x1' in rect) {
+                rect.x = rect.x1;
+                rect.y = rect.y1;
+                rect.width = rect.x2 - rect.x1;
+                rect.height = rect.y2 - rect.y1;
+            }
+            if (Math.abs(rect.width) > ct.place.gridX) {
+                oversized = true;
+            } else if (Math.abs(rect.height) > ct.place.gridY) {
+                oversized = true;
+            }
+            const shape = {
+                x: rect.x,
+                y: rect.y,
+                scale: {
+                    x: 1, y: 1
+                },
+                rotation: 0,
+                shape: {
+                    type: 'rect',
+                    left: 0,
+                    top: 0,
+                    right: rect.width,
+                    bottom: rect.height
+                }
+            };
+            return ct.place.traceCustom(shape, oversized, cgroup, getAll);
+        },
+        /**
+         * Tests for intersections with a filled circle.
+         * If `getAll` is set to `true`, returns all the copies that intersect
+         * the circle; otherwise, returns the first one that fits the conditions.
+         *
+         * @param {ICtPlaceCircle} rect An object that describes the line segment.
+         * @param {string} [ctype] An optional collision group to trace against.
+         * If omitted, will trace through all the copies in the current room.
+         * @param {boolean} [getAll] Whether to return all the intersections (true),
+         * or return the first one.
+         * @returns {Copy|Array<Copy>}
+         */
+        traceCircle(circle, cgroup, getAll) {
+            let oversized = false;
+            if (circle.radius * 2 > ct.place.gridX || circle.radius * 2 > ct.place.gridY) {
+                oversized = true;
+            }
+            const shape = {
+                x: circle.x,
+                y: circle.y,
+                scale: {
+                    x: 1, y: 1
+                },
+                rotation: 0,
+                shape: {
+                    type: 'circle',
+                    r: circle.radius
+                }
+            };
+            return ct.place.traceCustom(shape, oversized, cgroup, getAll);
+        },
+        /**
+         * Tests for intersections with a polyline. It is a hollow shape made
+         * of connected line segments. The shape is not closed unless you add
+         * the closing point by yourself.
+         * If `getAll` is set to `true`, returns all the copies that intersect
+         * the polyline; otherwise, returns the first one that fits the conditions.
+         *
+         * @param {Array<IPoint>} polyline An array of objects with `x` and `y` properties.
+         * @param {string} [ctype] An optional collision group to trace against.
+         * If omitted, will trace through all the copies in the current room.
+         * @param {boolean} [getAll] Whether to return all the intersections (true),
+         * or return the first one.
+         * @returns {Copy|Array<Copy>}
+         */
+        tracePolyline(polyline, cgroup, getAll) {
+            const shape = {
+                x: 0,
+                y: 0,
+                scale: {
+                    x: 1, y: 1
+                },
+                rotation: 0,
+                shape: {
+                    type: 'strip',
+                    points: polyline
+                }
+            };
+            return ct.place.traceCustom(shape, true, cgroup, getAll);
+        },
+        /**
+         * Tests for intersections with a point.
+         * If `getAll` is set to `true`, returns all the copies that intersect
+         * the point; otherwise, returns the first one that fits the conditions.
+         *
+         * @param {object} point An object with `x` and `y` properties.
+         * @param {string} [ctype] An optional collision group to trace against.
+         * If omitted, will trace through all the copies in the current room.
+         * @param {boolean} [getAll] Whether to return all the intersections (true),
+         * or return the first one.
+         * @returns {Copy|Array<Copy>}
+         */
+        tracePoint(point, cgroup, getAll) {
+            const shape = {
+                x: point.x,
+                y: point.y,
+                scale: {
+                    x: 1, y: 1
+                },
+                rotation: 0,
+                shape: {
+                    type: 'point'
+                }
+            };
+            return ct.place.traceCustom(shape, false, cgroup, getAll);
+        },
         /**
          * Throws a ray from point (x1, y1) to (x2, y2), returning all the copies
          * that touched the ray. The first copy in the returned array is the closest copy,
@@ -1201,44 +1579,18 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
          * @param {String} [ctype] An optional collision group to trace against.
          * If omitted, will trace through all the copies in the current room.
          *
+         * @deprecated Since v1.4.3. Use `ct.place.traceLine` instead.
+         *
          * @returns {Array<Copy>} Array of all the copies that touched the ray
          */
         trace(x1, y1, x2, y2, ctype) {
-            var copies = [],
-                ray = {
-                    x: 0,
-                    y: 0,
-                    scale: {
-                        x: 1,
-                        y: 1
-                    },
-                    rotation: 0,
-                    shape: {
-                        type: 'line',
-                        x1: x1,
-                        y1: y1,
-                        x2: x2,
-                        y2: y2
-                    }
-                };
-            for (var i in ct.stack) {
-                if (!ctype || ct.stack[i].ctype === ctype) {
-                    if (ct.place.collide(ray, ct.stack[i])) {
-                        copies.push(ct.stack[i]);
-                    }
-                }
-            }
-            if (copies.length > 1) {
-                copies.sort(function sortCopies(a, b) {
-                    var dist1, dist2;
-                    dist1 = ct.u.pdc(x1, y1, a.x, a.y);
-                    dist2 = ct.u.pdc(x1, y1, b.x, b.y);
-                    return dist1 - dist2;
-                });
-            }
-            return copies;
+            return ct.place.traceLine({
+                x1, y1, x2, y2
+            }, ctype, true);
         }
     };
+    // Aliases
+    ct.place.traceRectange = ct.place.traceRect;
     // a magic procedure which tells 'go' function to change its direction
     setInterval(function switchCtPlaceGoDirection() {
         ct.place.m *= -1;
@@ -1401,6 +1753,8 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
     };
 
     ct.mouse = {
+        xui: 0,
+        yui: 0,
         xprev: 0,
         yprev: 0,
         xuiprev: 0,
@@ -2386,7 +2740,9 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
      * @returns {void}
      */
     ct.sound.stop = function stop(name, id) {
-        ct.res.sounds[name].stop(id);
+        if (ct.sound.playing(name, id)) {
+            ct.res.sounds[name].stop(id);
+        }
     };
 
     /**
@@ -2458,9 +2814,17 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
      * @returns {void}
      */
     ct.sound.fade = function fade(name, newVolume, duration, id) {
-        var howl = ct.res.sounds[name],
-            oldVolume = id ? howl.volume(id) : howl.volume;
-        howl.fade(oldVolume, newVolume, duration, id);
+        if (ct.sound.playing(name, id)) {
+            var howl = ct.res.sounds[name],
+                oldVolume = id ? howl.volume(id) : howl.volume;
+            try {
+                howl.fade(oldVolume, newVolume, duration, id);
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.warn('Could not reliably fade a sound, reason:', e);
+                ct.sound.volume(name, newVolume, id);
+            }
+        }
     };
 
     /**
@@ -2491,9 +2855,11 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
      * @returns {void}
      */
     ct.sound.position = function position(name, id, x, y, z) {
-        var howl = ct.res.sounds[name],
-            oldPosition = howl.pos(id);
-        howl.pos(x, y, z || oldPosition[2], id);
+        if (ct.sound.playing(name, id)) {
+            var howl = ct.res.sounds[name],
+                oldPosition = howl.pos(id);
+            howl.pos(x, y, z || oldPosition[2], id);
+        }
     };
 
     /**
@@ -2510,15 +2876,12 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
     };
 })();
 
-/* global ct */
-/* eslint {"no-multi-spaces": "off", "object-property-newline": "off"} */
-
-(function() {
+(function ctKeyboard() {
     var keyPrefix = 'keyboard.';
-    var setKey = function(key, value) {
+    var setKey = function (key, value) {
         ct.inputs.registry[keyPrefix + key] = value;
     };
-    
+
     ct.keyboard = {
         string: '',
         lastKey: '',
@@ -2569,7 +2932,7 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
             e.preventDefault();
         }
     };
-    
+
     if (document.addEventListener) {
         document.addEventListener('keydown', ct.keyboard.onDown, false);
         document.addEventListener('keyup', ct.keyboard.onUp, false);
@@ -2582,7 +2945,9 @@ ct.inputs.addAction('MoveDown', [{"code":"keyboard.KeyS"},{"code":"keyboard.Arro
 
 var getLabel = (room) => {
 
-    if (room.name === 'ssense_bedroom') {
+
+    if (room.name === 'central_room') {
+    console.log(room.name)
 
         var d = new Date();
         var n = d.getSeconds();
@@ -2590,7 +2955,8 @@ var getLabel = (room) => {
         fetch(`https://jsonplaceholder.typicode.com/todos/${n}`)
             .then(response => response.json())
             .then(json => {
-                const scoreLabel = new PIXI.Text('This text is fetch from an external API: ' + json.title);
+                const scoreLabel = new PIXI.Text('Score: ' + json.title);
+
                 scoreLabel.x = 330;
                 scoreLabel.y = 30;
                 scoreLabel.depth = 1000;
@@ -2605,20 +2971,20 @@ var getLabel = (room) => {
                 let peers = [
                     {
                         sex: 'men',
-                        name: 'Alexis',
+                        name: 'alexis anzieu',
                         slack: 'https://ssense.slack.com/archives/DDVHQF7R7',
                         description: 'I work as devops'
                     },
                     {
-                        sex: 'men',
-                        name: 'Nicolas',
-                        slack: 'https://ssense.slack.com/team/UAU8N6A66',
+                        sex: 'women',
+                        name: 'alexa darwin',
+                        slack: 'https://ssense.slack.com/archives/DDVHQF7R7',
                         description: 'I work as PM'
                     },
                     {
-                        sex: 'men',
-                        name: 'JP',
-                        slack: 'https://ssense.slack.com/team/U8PKHKB36',
+                        sex: 'women',
+                        name: 'ooopsi S',
+                        slack: 'https://ssense.slack.com/archives/DDVHQF7R7',
                         description: 'I work as Software dev'
                     }
                 ]
@@ -2637,24 +3003,29 @@ var getLabel = (room) => {
                     return peerCopy;
                 })
 
-
             })
     }
+
 
 };
 /**
  * @typedef IRoomMergeResult
  *
  * @property {Array<Copy>} copies
- * @property {Array<Tileset>} tileLayers
+ * @property {Array<Tilemap>} tileLayers
  * @property {Array<Background>} backgrounds
  */
 
 class Room extends PIXI.Container {
+    static getNewId() {
+        this.roomId++;
+        return this.roomId;
+    }
+
     constructor(template) {
         super();
         this.x = this.y = 0;
-        this.uid = 0;
+        this.uid = Room.getNewId();
         this.tileLayers = [];
         this.backgrounds = [];
         if (!ct.room) {
@@ -2671,23 +3042,23 @@ class Room extends PIXI.Container {
             this.template = template;
             this.name = template.name;
             if (this === ct.room) {
-                ct.pixiApp.renderer.backgroundColor = Number('0x' + this.template.backgroundColor.slice(1));
+                ct.pixiApp.renderer.backgroundColor = ct.u.hexToPixi(this.template.backgroundColor);
             }
             ct.fittoscreen();
 
             for (let i = 0, li = template.bgs.length; i < li; i++) {
+                // Need to put extensions here, so we don't use ct.backgrounds.add
                 const bg = new ct.types.Background(
                     template.bgs[i].texture,
                     null,
                     template.bgs[i].depth,
                     template.bgs[i].extends
                 );
-                this.backgrounds.push(bg);
-                ct.stack.push(bg);
                 this.addChild(bg);
             }
             for (let i = 0, li = template.tiles.length; i < li; i++) {
-                const tl = ct.rooms.addTileLayer(template.tiles[i]);
+                const tl = new Tilemap(template.tiles[i]);
+                tl.cache();
                 this.tileLayers.push(tl);
                 this.addChild(tl);
             }
@@ -2724,6 +3095,8 @@ class Room extends PIXI.Container {
         return value;
     }
 }
+Room.roomId = 0;
+
 (function roomsAddon() {
     /* global deadPool */
     var nextRoom;
@@ -2754,9 +3127,10 @@ class Room extends PIXI.Container {
          * Adds a new empty tile layer to the room, at the given depth
          * @param {number} layer The depth of the layer
          * @returns {Tileset} The created tile layer
+         * @deprecated Use ct.tilemaps.create instead.
          */
         addTileLayer(layer) {
-            return new ct.types.Tileset(layer);
+            return ct.tilemaps.create(layer);
         },
         /**
          * Clears the current stage, removing all rooms with copies, tile layers, backgrounds,
@@ -2766,8 +3140,11 @@ class Room extends PIXI.Container {
         clear() {
             ct.stage.children = [];
             ct.stack = [];
-            for (var i in ct.types.list) {
+            for (const i in ct.types.list) {
                 ct.types.list[i] = [];
+            }
+            for (const i in ct.backgrounds.list) {
+                ct.backgrounds.list[i] = [];
             }
             ct.rooms.list = {};
             for (const name in ct.rooms.templates) {
@@ -2890,15 +3267,15 @@ class Room extends PIXI.Container {
             for (const t of template.bgs) {
                 const bg = new ct.types.Background(t.texture, null, t.depth, t.extends);
                 target.backgrounds.push(bg);
-                ct.stack.push(bg);
                 target.addChild(bg);
                 generated.backgrounds.push(bg);
             }
             for (const t of template.tiles) {
-                const tl = ct.rooms.addTileLayer(t);
+                const tl = new Tilemap(t);
                 target.tileLayers.push(tl);
                 target.addChild(tl);
                 generated.tileLayers.push(tl);
+                tl.cache();
             }
             for (const t of template.objects) {
                 const c = ct.types.make(t.type, t.x, t.y, {
@@ -2942,39 +3319,18 @@ class Room extends PIXI.Container {
             nextRoom = void 0;
         },
         onCreate() {
-            /* global SSCD */
-ct.place.tileGrid = {};
-if (ct.types.list.TILELAYER) {
-    for (const layer of ct.types.list.TILELAYER) {
-        for (let i = 0, l = layer.tiles.length; i < l; i++) {
-            const t = layer.tiles[i];
-            // eslint-disable-next-line no-underscore-dangle
-            t._shape = new SSCD.Rectangle(
-                new SSCD.Vector(t.x, t.y),
-                new SSCD.Vector(t.width, t.height)
-            );
-            t.ctype = layer.ctype;
-            t.$chashes = ct.place.getHashes(t);
-            /* eslint max-depth: 0 */
-            for (const hash of t.$chashes) {
-                if (!(hash in ct.place.tileGrid)) {
-                    ct.place.tileGrid[hash] = [t];
-                } else {
-                    ct.place.tileGrid[hash].push(t);
-                }
-            }
-            t.depth = layer.depth;
-        }
-        if ([false][0]) {
-            for (let i = 0; i < layer.tiles.length; i++) {
-                const pixiTile = layer.pixiTiles[i],
-                      logicTile = layer.tiles[i];
-                pixiTile.$cDebugCollision = new PIXI.Graphics();
-                ct.place.drawDebugTileGraphic.apply(pixiTile, [logicTile]);
-                pixiTile.addChild(pixiTile.$cDebugCollision);
-            }
-        }
+            if (this === ct.room) {
+    ct.place.tileGrid = {};
+    const debugTraceGraphics = new PIXI.Graphics();
+    debugTraceGraphics.depth = 10000000; // Why not. Overlap everything.
+    ct.room.addChild(debugTraceGraphics);
+    ct.place.debugTraceGraphics = debugTraceGraphics;
+}
+for (const layer of this.tileLayers) {
+    if (this.children.indexOf(layer) === -1) {
+        continue;
     }
+    ct.place.enableTilemapCollisions(layer);
 }
 
         },
@@ -2988,7 +3344,7 @@ if (ct.types.list.TILELAYER) {
          * The name of the starting room, as it was set in ct.IDE.
          * @type {string}
          */
-        starting: 'ssense_bedroom'
+        starting: 'central_room'
     };
 })();
 /**
@@ -3007,53 +3363,32 @@ ct.rooms.beforeDraw = function beforeDraw() {
     
 };
 ct.rooms.afterDraw = function afterDraw() {
-    ct.mouse.xprev = ct.mouse.x;
+    if (ct.sound.follow && !ct.sound.follow.kill) {
+    ct.sound.howler.pos(
+        ct.sound.follow.x,
+        ct.sound.follow.y,
+        ct.sound.useDepth ? ct.sound.follow.z : 0
+    );
+} else if (ct.sound.manageListenerPosition) {
+    ct.sound.howler.pos(ct.camera.x, ct.camera.y, ct.camera.z || 0);
+}
+ct.mouse.xprev = ct.mouse.x;
 ct.mouse.yprev = ct.mouse.y;
 ct.mouse.xuiprev = ct.mouse.xui;
 ct.mouse.yuiprev = ct.mouse.yui;
 ct.mouse.pressed = ct.mouse.released = false;
 ct.inputs.registry['mouse.Wheel'] = 0;
-if (ct.sound.follow && !ct.sound.follow.kill) {
-    ct.sound.howler.pos(ct.sound.follow.x, ct.sound.follow.y, ct.sound.useDepth ? ct.sound.follow.z : 0);
-} else if (ct.sound.manageListenerPosition) {
-    ct.sound.howler.pos(ct.camera.x, ct.camera.y, ct.camera.z || 0);
-}
-/* global ct */
-
 ct.keyboard.clear();
 
 };
 
 
-ct.rooms.templates['gui'] = {
-    name: 'gui',
-    width: 800,
-    height: 600,
-    /* JSON.parse allows for a much faster loading of big objects */
-    objects: JSON.parse('[]'),
-    bgs: JSON.parse('[]'),
-    tiles: JSON.parse('[{"depth":-10,"tiles":[],"extends":{}}]'),
-    backgroundColor: '#000000',
-    onStep() {
-        
-    },
-    onDraw() {
-        
-    },
-    onLeave() {
-        
-    },
-    onCreate() {
-        
-    },
-    extends: {}
-}
-ct.rooms.templates['ssense_bedroom'] = {
-    name: 'ssense_bedroom',
+ct.rooms.templates['central_room'] = {
+    name: 'central_room',
     width: 2000,
     height: 1000,
     /* JSON.parse allows for a much faster loading of big objects */
-    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":512,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":700,"y":700,"tx":1,"ty":1,"type":"man_idle"},{"x":960,"y":0,"tx":3,"ty":3,"type":"door"},{"x":1216,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":1756,"y":500,"tx":3,"ty":3,"type":"ninefloor"}]'),
+    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":512,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1024,"y":0,"type":"rock"},{"x":1088,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":1216,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":700,"y":700,"tx":1,"ty":1,"type":"man_idle"},{"x":960,"y":128,"tx":3,"ty":3,"type":"sixfloor"},{"x":1792,"y":640,"tx":3,"ty":3,"type":"ninefloor"}]'),
     bgs: JSON.parse('[{"depth":-99999,"texture":"platformPack_tile004","extends":{}}]'),
     tiles: JSON.parse('[{"depth":-10,"tiles":[],"extends":{}}]'),
     backgroundColor: '#000000',
@@ -3069,8 +3404,10 @@ ct.rooms.templates['ssense_bedroom'] = {
     onCreate() {
         
 getLabel(this);
-this.sixfloor = 'sixfloor';
-this.ninefloor = 'ninefloor';
+
+this.sixfloor = 'sixfloor'
+this.ninefloor = 'ninefloor'
+
 this.dialogBox = new PIXI.Text(null, { fontSize: 50, fill : 'white', align : 'center', dropShadow: true});
 this.dialogBox.x = this.dialogBox.y = 800;
 this.dialogBox.visible = false;
@@ -3085,7 +3422,7 @@ ct.rooms.templates['sixfloor'] = {
     width: 2000,
     height: 1000,
     /* JSON.parse allows for a much faster loading of big objects */
-    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":512,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":1158,"y":500,"type":"man_idle"},{"x":320,"y":448,"type":"rock"},{"x":704,"y":448,"type":"rock"},{"x":1536,"y":448,"type":"rock"},{"x":320,"y":768,"type":"rock"},{"x":704,"y":768,"type":"rock"},{"x":1088,"y":768,"type":"rock"},{"x":1600,"y":768,"type":"rock"},{"x":1024,"y":0,"tx":3,"ty":3,"type":"door"},{"x":1216,"y":0,"type":"rock"}]'),
+    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":512,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1024,"y":0,"type":"rock"},{"x":1088,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":1216,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":960,"y":128,"tx":3,"ty":3,"type":"sixfloor"},{"x":1088,"y":576,"type":"man_idle"}]'),
     bgs: JSON.parse('[{"depth":-99999,"texture":"platformPack_tile004","extends":{}}]'),
     tiles: JSON.parse('[{"depth":-10,"tiles":[],"extends":{}}]'),
     backgroundColor: '#000000',
@@ -3100,16 +3437,7 @@ ct.rooms.templates['sixfloor'] = {
     },
     onCreate() {
         
-getLabel(this);
-
-this.centralRoom = 'ssense_bedroom'
-
-    const scoreLabel = new PIXI.Text('Welcome to the 6th floor');
-    scoreLabel.x = 330;
-    scoreLabel.y = 30;
-    scoreLabel.depth = 1000;
-    scoreLabel.visible =true;
-    this.addChild(scoreLabel);
+this.central_room="central_room"
     },
     extends: {}
 }
@@ -3118,7 +3446,7 @@ ct.rooms.templates['ninefloor'] = {
     width: 2000,
     height: 1000,
     /* JSON.parse allows for a much faster loading of big objects */
-    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":512,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":1216,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1024,"y":0,"type":"rock"},{"x":1088,"y":0,"type":"rock"},{"x":1820,"y":576,"tx":3,"ty":3,"type":"ninefloor"},{"x":1600,"y":768,"type":"man_idle"}]'),
+    objects: JSON.parse('[{"x":0,"y":0,"type":"rock"},{"x":0,"y":64,"type":"rock"},{"x":0,"y":192,"type":"rock"},{"x":0,"y":256,"type":"rock"},{"x":0,"y":320,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":384,"type":"rock"},{"x":0,"y":448,"type":"rock"},{"x":0,"y":512,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":576,"type":"rock"},{"x":0,"y":128,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":192,"y":0,"type":"rock"},{"x":256,"y":0,"type":"rock"},{"x":320,"y":0,"type":"rock"},{"x":384,"y":0,"type":"rock"},{"x":448,"y":0,"type":"rock"},{"x":512,"y":0,"type":"rock"},{"x":576,"y":0,"type":"rock"},{"x":640,"y":0,"type":"rock"},{"x":704,"y":0,"type":"rock"},{"x":768,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":128,"y":0,"type":"rock"},{"x":64,"y":0,"type":"rock"},{"x":0,"y":704,"type":"rock"},{"x":0,"y":768,"type":"rock"},{"x":0,"y":832,"type":"rock"},{"x":0,"y":896,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":960,"type":"rock"},{"x":0,"y":640,"type":"rock"},{"x":896,"y":0,"type":"rock"},{"x":960,"y":0,"type":"rock"},{"x":1024,"y":0,"type":"rock"},{"x":1088,"y":0,"type":"rock"},{"x":1152,"y":0,"type":"rock"},{"x":1216,"y":0,"type":"rock"},{"x":1280,"y":0,"type":"rock"},{"x":1344,"y":0,"type":"rock"},{"x":1408,"y":0,"type":"rock"},{"x":1472,"y":0,"type":"rock"},{"x":1536,"y":0,"type":"rock"},{"x":1600,"y":0,"type":"rock"},{"x":1664,"y":0,"type":"rock"},{"x":1728,"y":0,"type":"rock"},{"x":1792,"y":0,"type":"rock"},{"x":1856,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":1920,"y":0,"type":"rock"},{"x":832,"y":0,"type":"rock"},{"x":128,"y":960,"type":"rock"},{"x":192,"y":960,"type":"rock"},{"x":256,"y":960,"type":"rock"},{"x":320,"y":960,"type":"rock"},{"x":384,"y":960,"type":"rock"},{"x":448,"y":960,"type":"rock"},{"x":512,"y":960,"type":"rock"},{"x":576,"y":960,"type":"rock"},{"x":640,"y":960,"type":"rock"},{"x":704,"y":960,"type":"rock"},{"x":768,"y":960,"type":"rock"},{"x":832,"y":960,"type":"rock"},{"x":896,"y":960,"type":"rock"},{"x":960,"y":960,"type":"rock"},{"x":1024,"y":960,"type":"rock"},{"x":1088,"y":960,"type":"rock"},{"x":1152,"y":960,"type":"rock"},{"x":1216,"y":960,"type":"rock"},{"x":1280,"y":960,"type":"rock"},{"x":1344,"y":960,"type":"rock"},{"x":1408,"y":960,"type":"rock"},{"x":1472,"y":960,"type":"rock"},{"x":1536,"y":960,"type":"rock"},{"x":1600,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":1664,"y":960,"type":"rock"},{"x":64,"y":960,"type":"rock"},{"x":1792,"y":960,"type":"rock"},{"x":1856,"y":960,"type":"rock"},{"x":1920,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1728,"y":960,"type":"rock"},{"x":1984,"y":0,"type":"rock"},{"x":1984,"y":64,"type":"rock"},{"x":1984,"y":128,"type":"rock"},{"x":1984,"y":192,"type":"rock"},{"x":1984,"y":256,"type":"rock"},{"x":2048,"y":256,"type":"rock"},{"x":2048,"y":320,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":2048,"y":384,"type":"rock"},{"x":1984,"y":384,"type":"rock"},{"x":1984,"y":448,"type":"rock"},{"x":1984,"y":512,"type":"rock"},{"x":1984,"y":576,"type":"rock"},{"x":1984,"y":640,"type":"rock"},{"x":1984,"y":704,"type":"rock"},{"x":1984,"y":768,"type":"rock"},{"x":1984,"y":832,"type":"rock"},{"x":1984,"y":896,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":960,"type":"rock"},{"x":1984,"y":320,"type":"rock"},{"x":1792,"y":640,"tx":3,"ty":3,"type":"ninefloor"},{"x":1536,"y":832,"type":"man_idle"}]'),
     bgs: JSON.parse('[{"depth":-99999,"texture":"platformPack_tile004","extends":{}}]'),
     tiles: JSON.parse('[{"depth":-10,"tiles":[],"extends":{}}]'),
     backgroundColor: '#000000',
@@ -3133,18 +3461,7 @@ ct.rooms.templates['ninefloor'] = {
     },
     onCreate() {
         
-
-getLabel(this);
-
-this.centralRoom = 'ssense_bedroom'
-
-    const scoreLabel = new PIXI.Text('Welcome to the 9th floor');
-    scoreLabel.x = 330;
-    scoreLabel.y = 30;
-    scoreLabel.depth = 1000;
-    scoreLabel.visible =true;
-    this.addChild(scoreLabel);
-
+this.central_room = "central_room"
     },
     extends: {}
 }
@@ -3201,7 +3518,7 @@ ct.styles = {
         soundsTotal: [0][0],
         soundsError: 0,
         sounds: {},
-        registry: [{"static":{"frames":1,"shape":{"type":"rect","top":66,"bottom":0,"left":36,"right":34},"anchor":{"x":0.5,"y":0.9791666666666666}},"walk1":{"frames":1,"shape":{"type":"rect","top":68,"bottom":0,"left":39,"right":39},"anchor":{"x":0.5,"y":1}},"walk2":{"frames":1,"shape":{"type":"rect","top":96,"bottom":0,"left":48,"right":48},"anchor":{"x":0.5,"y":0.9947916666666666}},"platformPack_item001":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item002":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item003":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item006":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item005":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item004":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item007":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item008":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item009":{"frames":1,"shape":{"type":"circle","r":14},"anchor":{"x":0.5,"y":0.46875}},"platformPack_item010":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item011":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item012":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item014":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item013":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item016":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item017":{"frames":1,"shape":{"type":"circle","r":18},"anchor":{"x":0.5,"y":0.5}},"platformPack_item015":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item018":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile001":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile002":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile003":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile005":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile004":{"atlas":"./img/t0.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile006":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile008":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile009":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile010":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile012":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile007":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile014":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile013":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile015":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile016":{"atlas":"./img/t1.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile011":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile017":{"atlas":"./img/t2.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile018":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile019":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"checkout":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile020":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile022":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile024":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile026":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile023":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile027":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile025":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile028":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile031":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile029":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile030":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile033":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile032":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile034":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile035":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile036":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile038":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile039":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile037":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile040":{"atlas":"./img/t3.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile042":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile044":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile041":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile047":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"door":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile046":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile045":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile048":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile049":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile053":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"ninefloor":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile043":{"frames":1,"shape":{"type":"rect","top":-29,"bottom":64,"left":0,"right":64},"anchor":{"x":-0.005208333333333315,"y":0.005208333333333315}},"platformPack_tile056":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile055":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile054":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile057":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile058":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile052":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile061":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile059":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile060":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile065":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile062":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile064":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile063":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"man_walk":{"frames":8,"shape":{"type":"rect","top":220,"bottom":0,"left":71,"right":70},"anchor":{"x":0.5,"y":1}},"man_idle":{"frames":1,"shape":{"type":"rect","top":214,"bottom":0,"left":72,"right":70},"anchor":{"x":0.5,"y":1}},"man_back":{"frames":1,"shape":{"type":"rect","top":220,"bottom":0,"left":71,"right":69},"anchor":{"x":0.5,"y":1}},"peer_idle":{"frames":1,"shape":{"type":"rect","top":189,"bottom":0,"left":68,"right":69},"anchor":{"x":0.5,"y":1}}}][0],
+        registry: [{"static":{"frames":1,"shape":{"type":"rect","top":66,"bottom":0,"left":36,"right":34},"anchor":{"x":0.5,"y":0.9791666666666666}},"walk1":{"frames":1,"shape":{"type":"rect","top":68,"bottom":0,"left":39,"right":39},"anchor":{"x":0.5,"y":1}},"walk2":{"frames":1,"shape":{"type":"rect","top":96,"bottom":0,"left":48,"right":48},"anchor":{"x":0.5,"y":0.9947916666666666}},"platformPack_item001":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item002":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item003":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item006":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item005":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item004":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item007":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item008":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item009":{"frames":1,"shape":{"type":"circle","r":14},"anchor":{"x":0.5,"y":0.46875}},"platformPack_item010":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item011":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item012":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item014":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item013":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item016":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item017":{"frames":1,"shape":{"type":"circle","r":18},"anchor":{"x":0.5,"y":0.5}},"platformPack_item015":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_item018":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile001":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile002":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile003":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile005":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile004":{"atlas":"./img/t0.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile006":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile008":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile009":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile010":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile012":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile007":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile014":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile013":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile015":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile016":{"atlas":"./img/t1.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile011":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile017":{"atlas":"./img/t2.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile018":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile019":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"checkout":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile020":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile022":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile024":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile026":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile023":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile027":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile025":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile028":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile031":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile029":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile030":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile033":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile032":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile034":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile035":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile036":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile038":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile039":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile037":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile040":{"atlas":"./img/t3.png","frames":0,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile042":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile044":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile041":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile047":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile051":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile046":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile045":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile048":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile049":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile053":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile050":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile043":{"frames":1,"shape":{"type":"rect","top":-29,"bottom":64,"left":0,"right":64},"anchor":{"x":-0.005208333333333315,"y":0.005208333333333315}},"platformPack_tile056":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile055":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile054":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile057":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile058":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile052":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile061":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile059":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile060":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile065":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile062":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile064":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"platformPack_tile063":{"frames":1,"shape":{"type":"rect","top":0,"bottom":64,"left":0,"right":64},"anchor":{"x":0,"y":0}},"man_walk":{"frames":8,"shape":{"type":"rect","top":220,"bottom":0,"left":71,"right":70},"anchor":{"x":0.5,"y":1}},"man_idle":{"frames":1,"shape":{"type":"rect","top":214,"bottom":0,"left":72,"right":70},"anchor":{"x":0.5,"y":1}},"man_back":{"frames":1,"shape":{"type":"rect","top":220,"bottom":0,"left":71,"right":69},"anchor":{"x":0.5,"y":1}},"peer_idle":{"frames":1,"shape":{"type":"rect","top":189,"bottom":0,"left":68,"right":69},"anchor":{"x":0.5,"y":1}}}][0],
         atlases: [["./img/a0.json"]][0],
         skelRegistry: [{}][0],
         fetchImage(url, callback) {
@@ -3241,6 +3558,9 @@ PIXI.Loader.shared
          * than the auto-generated one
          */
         getTexture(name, frame) {
+            if (frame === null) {
+                frame = void 0;
+            }
             if (name === -1) {
                 if (frame !== void 0) {
                     return PIXI.Texture.EMPTY;
@@ -3306,7 +3626,8 @@ PIXI.Loader.shared
 
         loadingScreen.classList.add('hidden');
         setTimeout(() => {
-            Object.defineProperty(ct.types.Copy.prototype, 'ctype', {
+            ct.mouse.setupListeners();
+Object.defineProperty(ct.types.Copy.prototype, 'ctype', {
     set: function (value) {
         this.$ctype = value;
     },
@@ -3339,7 +3660,12 @@ Object.defineProperty(ct.types.Copy.prototype, 'moveContinuousByAxes', {
         );
     }
 });
-ct.mouse.setupListeners();
+
+Object.defineProperty(ct.types.Tilemap.prototype, 'enableCollisions', {
+    value: function (ctype) {
+        ct.place.enableTilemapCollisions(this, ctype);
+    }
+});
 
             PIXI.Ticker.shared.add(ct.loop);
             ct.rooms.forceSwitch(ct.rooms.starting);
@@ -3348,124 +3674,6 @@ ct.mouse.setupListeners();
     ct.res.parseImages();
 })(ct);
 
-/**
- * @extends {PIXI.TilingSprite}
- */
-class Background extends PIXI.TilingSprite {
-    constructor(bgName, frame, depth, exts) {
-        exts = exts || {};
-        var width = ct.camera.width,
-            height = ct.camera.height;
-        if (exts.repeat === 'no-repeat' || exts.repeat === 'repeat-x') {
-            height = ct.res.getTexture(bgName, frame || 0).orig.height * (exts.scaleY || 1);
-        }
-        if (exts.repeat === 'no-repeat' || exts.repeat === 'repeat-y') {
-            width = ct.res.getTexture(bgName, frame || 0).orig.width * (exts.scaleX || 1);
-        }
-        super(ct.res.getTexture(bgName, frame || 0), width, height);
-        ct.types.list.BACKGROUND.push(this);
-        this.anchor.x = this.anchor.y = 0;
-        this.depth = depth;
-        this.shiftX = this.shiftY = this.movementX = this.movementY = 0;
-        this.parallaxX = this.parallaxY = 1;
-        if (exts) {
-            ct.u.extend(this, exts);
-        }
-        if (this.scaleX) {
-            this.tileScale.x = Number(this.scaleX);
-        }
-        if (this.scaleY) {
-            this.tileScale.y = Number(this.scaleY);
-        }
-        this.reposition();
-    }
-    onStep() {
-        this.shiftX += ct.delta * this.movementX;
-        this.shiftY += ct.delta * this.movementY;
-    }
-    reposition() {
-        const cameraBounds = ct.camera.getBoundingBox();
-        if (this.repeat !== 'repeat-x' && this.repeat !== 'no-repeat') {
-            this.y = cameraBounds.y;
-            this.tilePosition.y = -this.y * this.parallaxY + this.shiftY;
-            this.height = cameraBounds.height;
-        } else {
-            this.y = this.shiftY + cameraBounds.y * (this.parallaxY - 1);
-        }
-        if (this.repeat !== 'repeat-y' && this.repeat !== 'no-repeat') {
-            this.x = cameraBounds.x;
-            this.tilePosition.x = -this.x * this.parallaxX + this.shiftX;
-            this.width = cameraBounds.width;
-        } else {
-            this.x = this.shiftX + cameraBounds.x * (this.parallaxX - 1);
-        }
-    }
-    onDraw() {
-        this.reposition();
-    }
-    static onCreate() {
-        void 0;
-    }
-    static onDestroy() {
-        void 0;
-    }
-}
-/**
- * @extends {PIXI.Container}
- */
-class Tileset extends PIXI.Container {
-    constructor(template) {
-        super();
-        this.depth = template.depth;
-        this.tiles = template.tiles.map(tile => ({
-            ...tile
-        }));
-        this.pixiTiles = [];
-        if (template.extends) {
-            Object.assign(this, template.extends);
-        }
-        ct.types.list.TILELAYER.push(this);
-        for (let i = 0, l = template.tiles.length; i < l; i++) {
-            const textures = ct.res.getTexture(template.tiles[i].texture);
-            const sprite = new PIXI.Sprite(textures[template.tiles[i].frame]);
-            sprite.anchor.x = sprite.anchor.y = 0;
-            this.addChild(sprite);
-            this.pixiTiles.push(sprite);
-            sprite.x = template.tiles[i].x;
-            sprite.y = template.tiles[i].y;
-        }
-        // Divide tiles into a grid of larger cells so that we can cache these cells as
-        const bounds = this.getLocalBounds();
-        const cols = Math.ceil(bounds.width / 1024),
-              rows = Math.ceil(bounds.height / 1024);
-        this.cells = [];
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                const cell = new PIXI.Container();
-                this.cells.push(cell);
-            }
-        }
-        for (let i = 0, l = this.tiles.length; i < l; i++) {
-            const tile = this.children[0],
-                  x = Math.floor((tile.x - bounds.x) / 1024),
-                  y = Math.floor((tile.y - bounds.y) / 1024);
-            this.cells[y * cols + x].addChild(tile);
-        }
-        this.removeChildren();
-
-        // Filter out empty cells, cache filled ones
-        for (let i = 0, l = this.cells.length; i < l; i++) {
-            if (this.cells[i].children.length === 0) {
-                this.cells.splice(i, 1);
-                i--;
-                l--;
-                continue;
-            }
-            this.addChild(this.cells[i]);
-            this.cells[i].cacheAsBitmap = true;
-        }
-    }
-}
 /**
  * @extends {PIXI.AnimatedSprite}
  * @class
@@ -3490,6 +3698,7 @@ class Tileset extends PIXI.Container {
  */
 const Copy = (function Copy() {
     const textureAccessor = Symbol('texture');
+    let uid = 0;
     class Copy extends PIXI.AnimatedSprite {
         /**
          * Creates an instance of Copy.
@@ -3546,7 +3755,7 @@ const Copy = (function Copy() {
             this.speed = this.direction = this.gravity = this.hspeed = this.vspeed = 0;
             this.gravityDir = 270;
             this.depth = 0;
-            this.uid = ++ct.room.uid;
+            this.uid = ++uid;
             if (type) {
                 ct.u.ext(this, {
                     type,
@@ -3709,15 +3918,13 @@ if ([false][0] && this instanceof ct.types.Copy) {
      */
     ct.types = {
         Copy,
-        Background,
-        Tileset,
         /**
          * An object that contains arrays of copies of all types.
          * @type {Object.<string,Array<Copy>>}
          */
         list: {
             BACKGROUND: [],
-            TILELAYER: []
+            TILEMAP: []
         },
         /**
          * A map of all the templates of types exported from ct.IDE.
@@ -3779,8 +3986,11 @@ if ([false][0] && this instanceof ct.types.Copy) {
          * @returns {void}
          */
         each(func) {
-            for (const i in ct.stack) {
-                func.apply(ct.stack[i], this);
+            for (const copy of ct.stack) {
+                if (!(copy instanceof Copy)) {
+                    continue; // Skip backgrounds and tile layers
+                }
+                func.apply(copy, this);
             }
         },
         /*
@@ -3803,6 +4013,14 @@ if ([false][0] && this instanceof ct.types.Copy) {
                 return Boolean(obj.position);
             }
             return Boolean(obj);
+        },
+        /**
+         * Checks whether a given object is a ct.js copy.
+         * @param {any} obj The object which needs to be checked.
+         * @returns {boolean} Returns `true` if the passed object is a copy; `false` otherwise.
+         */
+        isCopy(obj) {
+            return obj instanceof Copy;
         }
     };
     ct.types.copy = ct.types.make;
@@ -3909,6 +4127,27 @@ if (robot) {
     extends: {}
 };
 ct.types.list['checkpoint'] = [];
+ct.types.templates["spike"] = {
+    depth: 0,
+    texture: "platformPack_tile043",
+    onStep: function () {
+        this.move();
+    },
+    onDraw: function () {
+        
+    },
+    onDestroy: function () {
+        
+    },
+    onCreate: function () {
+        
+
+    },
+    extends: {
+    "ctype": "dead"
+}
+};
+ct.types.list['spike'] = [];
 ct.types.templates["man_w"] = {
     depth: 0,
     texture: "platformPack_item009",
@@ -3933,10 +4172,10 @@ ct.types.templates["man_idle"] = {
     onStep: function () {
             let enableDialog = (type) => {
         const peer = ct.place.meet(type, type.x + 10, type.y + 10, 'peer_idle') ||
-            ct.place.meet(type, type.x - 10, type.y - 10, 'peer_idle')
+                     ct.place.meet(type, type.x - 10, type.y - 10, 'peer_idle')
         if (peer && !ct.room.dialogBox.visible) {
             console.log(peer)
-            ct.room.dialogBox.text = `${ct.room.welcomeMessage[Math.floor(Math.random() * ct.room.welcomeMessage.length)]},  Im ${peer.name}. ${peer.description}`
+            ct.room.dialogBox.text =  `${ct.room.welcomeMessage[Math.floor(Math.random() * ct.room.welcomeMessage.length)]},  Im ${peer.name}. ${peer.description}`
             ct.room.dialogBox.visible = true;
         }
     }
@@ -3944,10 +4183,9 @@ ct.types.templates["man_idle"] = {
         if (direction === 'horizontal' && ct.place.free(type, type.x + Math.sign(type.hspd), type.y, 'Solid') ||
             direction === 'vertical' && ct.place.free(type, type.x, type.y + Math.sign(type.vspd), 'Solid')
         ) {
-            if (ct.room.name === 'ssense_bedroom') {
-                ct.room.dialogBox.visible = false;
-            }
-                            return false;
+            if (ct.room.name === "central_room")
+            ct.room.dialogBox.visible = false;
+            return false;
         }
         enableDialog(this)
         return true;
@@ -4015,9 +4253,7 @@ this.animationSpeed = 0.2;
 
 
     },
-    extends: {
-    "visible": true
-}
+    extends: {}
 };
 ct.types.list['man_idle'] = [];
 ct.types.templates["man_back"] = {
@@ -4065,21 +4301,20 @@ this.addChild(label);
 }
 };
 ct.types.list['peer_idle'] = [];
-ct.types.templates["door"] = {
+ct.types.templates["sixfloor"] = {
     depth: 0,
-    texture: "door",
+    texture: "platformPack_tile051",
     onStep: function () {
-        // Are there next rooms defined?
-if (ct.room.sixfloor) {
+        if (ct.room.sixfloor) {
     // Do we collide with the Robot?
     if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
         // Switch to the next room
         ct.rooms.switch(ct.room.sixfloor);
     }
-} else if (ct.room.centralRoom){
+} else {
         if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
         // Switch to the next room
-        ct.rooms.switch(ct.room.centralRoom);
+        ct.rooms.switch(ct.room.central_room);
     }
 }
     },
@@ -4096,22 +4331,21 @@ if (ct.room.sixfloor) {
     "ctype": "exit"
 }
 };
-ct.types.list['door'] = [];
+ct.types.list['sixfloor'] = [];
 ct.types.templates["ninefloor"] = {
     depth: 0,
-    texture: "ninefloor",
+    texture: "platformPack_tile050",
     onStep: function () {
-        // Are there next rooms defined?
-if (ct.room.ninefloor) {
+        if (ct.room.ninefloor) {
     // Do we collide with the Robot?
     if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
         // Switch to the next room
         ct.rooms.switch(ct.room.ninefloor);
     }
-} else if (ct.room.centralRoom){
+} else {
         if (ct.place.meet(this, this.x, this.y, 'man_idle')) {
         // Switch to the next room
-        ct.rooms.switch(ct.room.centralRoom);
+        ct.rooms.switch(ct.room.central_room);
     }
 }
     },
@@ -4129,24 +4363,6 @@ if (ct.room.ninefloor) {
 }
 };
 ct.types.list['ninefloor'] = [];
-ct.types.templates["man_idle"] = {
-    depth: 0,
-    texture: "man_idle",
-    onStep: function () {
-        this.move();
-    },
-    onDraw: function () {
-        
-    },
-    onDestroy: function () {
-        
-    },
-    onCreate: function () {
-        
-    },
-    extends: {}
-};
-ct.types.list['man_idle'] = [];
     
 
     ct.types.beforeStep = function beforeStep() {
@@ -4206,6 +4422,344 @@ if ((this.transform && (this.transform._localID !== this.transform._currentLocal
 
     };
 })(ct);
+/**
+ * @extends {PIXI.TilingSprite}
+ * @property {number} shiftX How much to shift the texture horizontally, in pixels.
+ * @property {number} shiftY How much to shift the texture vertically, in pixels.
+ * @property {number} movementX The speed at which the background's texture moves by X axis,
+ * wrapping around its area. The value is measured in pixels per frame, and takes
+ * `ct.delta` into account.
+ * @property {number} movementY The speed at which the background's texture moves by Y axis,
+ * wrapping around its area. The value is measured in pixels per frame, and takes
+ * `ct.delta` into account.
+ * @property {number} parallaxX A value that makes background move faster
+ * or slower relative to other objects. It is often used to create an effect of depth.
+ * `1` means regular movement, values smaller than 1
+ * will make it move slower and make an effect that a background is placed farther away from camera;
+ * values larger than 1 will do the opposite, making the background appear closer than the rest
+ * of object.
+ * This property is for horizontal movement.
+ * @property {number} parallaxY A value that makes background move faster
+ * or slower relative to other objects. It is often used to create an effect of depth.
+ * `1` means regular movement, values smaller than 1
+ * will make it move slower and make an effect that a background is placed farther away from camera;
+ * values larger than 1 will do the opposite, making the background appear closer than the rest
+ * of object.
+ * This property is for vertical movement.
+ * @class
+ */
+class Background extends PIXI.TilingSprite {
+    constructor(texName, frame = 0, depth = 0, exts = {}) {
+        var width = ct.camera.width,
+            height = ct.camera.height;
+        const texture = ct.res.getTexture(texName, frame || 0);
+        if (exts.repeat === 'no-repeat' || exts.repeat === 'repeat-x') {
+            height = texture.height * (exts.scaleY || 1);
+        }
+        if (exts.repeat === 'no-repeat' || exts.repeat === 'repeat-y') {
+            width = texture.width * (exts.scaleX || 1);
+        }
+        super(texture, width, height);
+        if (!ct.backgrounds.list[texName]) {
+            ct.backgrounds.list[texName] = [];
+        }
+        ct.backgrounds.list[texName].push(this);
+        ct.types.list.BACKGROUND.push(this);
+        ct.stack.push(this);
+        this.anchor.x = this.anchor.y = 0;
+        this.depth = depth;
+        this.shiftX = this.shiftY = this.movementX = this.movementY = 0;
+        this.parallaxX = this.parallaxY = 1;
+        if (exts) {
+            ct.u.extend(this, exts);
+        }
+        if (this.scaleX) {
+            this.tileScale.x = Number(this.scaleX);
+        }
+        if (this.scaleY) {
+            this.tileScale.y = Number(this.scaleY);
+        }
+        this.reposition();
+    }
+    onStep() {
+        this.shiftX += ct.delta * this.movementX;
+        this.shiftY += ct.delta * this.movementY;
+    }
+    /**
+     * Updates the position of this background.
+     */
+    reposition() {
+        const cameraBounds = this.isUi ?
+            {
+                x: 0, y: 0, width: ct.camera.width, height: ct.camera.height
+            } :
+            ct.camera.getBoundingBox();
+        if (this.repeat !== 'repeat-x' && this.repeat !== 'no-repeat') {
+            this.y = cameraBounds.y;
+            this.tilePosition.y = -this.y * this.parallaxY + this.shiftY;
+            this.height = cameraBounds.height + 1;
+        } else {
+            this.y = this.shiftY + cameraBounds.y * (this.parallaxY - 1);
+        }
+        if (this.repeat !== 'repeat-y' && this.repeat !== 'no-repeat') {
+            this.x = cameraBounds.x;
+            this.tilePosition.x = -this.x * this.parallaxX + this.shiftX;
+            this.width = cameraBounds.width + 1;
+        } else {
+            this.x = this.shiftX + cameraBounds.x * (this.parallaxX - 1);
+        }
+    }
+    onDraw() {
+        this.reposition();
+    }
+    static onCreate() {
+        void 0;
+    }
+    static onDestroy() {
+        void 0;
+    }
+    get isUi() {
+        return this.parent ? Boolean(this.parent.isUi) : false;
+    }
+}
+/**
+ * @namespace
+ */
+ct.backgrounds = {
+    Background,
+    list: {},
+    /**
+     * @returns {Background} The created background
+     */
+    add(texName, frame = 0, depth = 0, container = ct.room) {
+        if (!texName) {
+            throw new Error('[ct.backgrounds] The texName argument is required.');
+        }
+        const bg = new Background(texName, frame, depth);
+        container.addChild(bg);
+        return bg;
+    }
+};
+ct.types.Background = Background;
+
+/**
+ * @extends {PIXI.Container}
+ * @class
+ */
+class Tilemap extends PIXI.Container {
+    /**
+     * @param {object} template A template object that contains data about depth
+     * and tile placement. It is usually used by ct.IDE.
+     */
+    constructor(template) {
+        super();
+        this.pixiTiles = [];
+        if (template) {
+            this.depth = template.depth;
+            this.tiles = template.tiles.map(tile => ({
+                ...tile
+            }));
+            if (template.extends) {
+                Object.assign(this, template.extends);
+            }
+            for (let i = 0, l = template.tiles.length; i < l; i++) {
+                const textures = ct.res.getTexture(template.tiles[i].texture);
+                const sprite = new PIXI.Sprite(textures[template.tiles[i].frame]);
+                sprite.anchor.x = sprite.anchor.y = 0;
+                this.addChild(sprite);
+                this.pixiTiles.push(sprite);
+                sprite.x = template.tiles[i].x;
+                sprite.y = template.tiles[i].y;
+            }
+        } else {
+            this.tiles = [];
+        }
+        ct.types.list.TILEMAP.push(this);
+    }
+    /**
+     * Adds a tile to the tilemap. Will throw an error if a tilemap is cached.
+     * @param {string} textureName The name of the texture to use
+     * @param {number} x The horizontal location of the tile
+     * @param {number} y The vertical location of the tile
+     * @param {number} [frame] The frame to pick from the source texture. Defaults to 0.
+     * @returns {PIXI.Sprite} The created tile
+     */
+    addTile(textureName, x, y, frame = 0) {
+        if (this.cached) {
+            throw new Error('[ct.tiles] Adding tiles to cached tilemaps is forbidden. Create a new tilemap, or add tiles before caching the tilemap.');
+        }
+        const texture = ct.res.getTexture(textureName, frame);
+        const sprite = new PIXI.Sprite(texture);
+        sprite.x = x;
+        sprite.y = y;
+        this.tiles.push({
+            texture: textureName,
+            frame,
+            x,
+            y,
+            width: sprite.width,
+            height: sprite.height
+        });
+        this.addChild(sprite);
+        this.pixiTiles.push(sprite);
+        return sprite;
+    }
+    /**
+     * Enables caching on this tileset, freezing it and turning it
+     * into a series of bitmap textures. This proides great speed boost,
+     * but prevents further editing.
+     */
+    cache(chunkSize = 1024) {
+        if (this.cached) {
+            throw new Error('[ct.tiles] Attempt to cache an already cached tilemap.');
+        }
+
+        // Divide tiles into a grid of larger cells so that we can cache these cells as
+        const bounds = this.getLocalBounds();
+        const cols = Math.ceil(bounds.width / chunkSize),
+              rows = Math.ceil(bounds.height / chunkSize);
+        this.cells = [];
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const cell = new PIXI.Container();
+                this.cells.push(cell);
+            }
+        }
+        for (let i = 0, l = this.tiles.length; i < l; i++) {
+            const tile = this.children[0],
+                  x = Math.floor((tile.x - bounds.x) / chunkSize),
+                  y = Math.floor((tile.y - bounds.y) / chunkSize);
+            this.cells[y * cols + x].addChild(tile);
+        }
+        this.removeChildren();
+
+        // Filter out empty cells, cache filled ones
+        for (let i = 0, l = this.cells.length; i < l; i++) {
+            if (this.cells[i].children.length === 0) {
+                this.cells.splice(i, 1);
+                i--;
+                l--;
+                continue;
+            }
+            this.addChild(this.cells[i]);
+            this.cells[i].cacheAsBitmap = true;
+        }
+
+        this.cached = true;
+    }
+    /**
+     * Enables caching on this tileset, freezing it and turning it
+     * into a series of bitmap textures. This proides great speed boost,
+     * but prevents further editing.
+     *
+     * This version packs tiles into rhombus-shaped chunks, and sorts them
+     * from top to bottom. This fixes seam issues for isometric games.
+     */
+    cacheDiamond(chunkSize = 1024) {
+        if (this.cached) {
+            throw new Error('[ct.tiles] Attempt to cache an already cached tilemap.');
+        }
+
+        this.cells = [];
+        this.diamondCellMap = {};
+        for (let i = 0, l = this.tiles.length; i < l; i++) {
+            const tile = this.children[0];
+            const [xNormalized, yNormalized] = ct.u.rotate(tile.x, tile.y * 2, -45);
+            const x = Math.floor(xNormalized / chunkSize),
+                  y = Math.floor(yNormalized / chunkSize),
+                  key = `${x}:${y}`;
+            if (!(key in this.diamondCellMap)) {
+                const chunk = new PIXI.Container();
+                chunk.chunkX = x;
+                chunk.chunkY = y;
+                this.diamondCellMap[key] = chunk;
+                this.cells.push(chunk);
+            }
+            this.diamondCellMap[key].addChild(tile);
+        }
+        this.removeChildren();
+
+        this.cells.sort((a, b) => {
+            const maxA = Math.max(a.chunkY, a.chunkX),
+                  maxB = Math.max(b.chunkY, b.chunkX);
+            if (maxA === maxB) {
+                return b.chunkX - a.chunkX;
+            }
+            return maxA - maxB;
+        });
+
+        for (let i = 0, l = this.cells.length; i < l; i++) {
+            this.addChild(this.cells[i]);
+            this.cells[i].cacheAsBitmap = true;
+        }
+
+        this.cached = true;
+    }
+}
+ct.types.Tilemap = Tilemap;
+
+/**
+ * @namespace
+ */
+ct.tilemaps = {
+    /**
+     * Creates a new tilemap at a specified depth, and adds it to the main room (ct.room).
+     * @param {number} [depth] The depth of a newly created tilemap. Defaults to 0.
+     * @returns {Tilemap} The created tilemap.
+     */
+    create(depth = 0) {
+        const tilemap = new Tilemap();
+        tilemap.depth = depth;
+        ct.room.addChild(tilemap);
+        return tilemap;
+    },
+    /**
+     * Adds a tile to the specified tilemap. It is the same as
+     * calling `tilemap.addTile(textureName, x, y, frame).
+     * @param {Tilemap} tilemap The tilemap to modify.
+     * @param {string} textureName The name of the texture to use.
+     * @param {number} x The horizontal location of the tile.
+     * @param {number} y The vertical location of the tile.
+     * @param {number} [frame] The frame to pick from the source texture. Defaults to 0.
+     * @returns {PIXI.Sprite} The created tile
+     */
+    addTile(tilemap, textureName, x, y, frame = 0) {
+        return tilemap.addTile(textureName, x, y, frame);
+    },
+    /**
+     * Enables caching on this tileset, freezing it and turning it
+     * into a series of bitmap textures. This proides great speed boost,
+     * but prevents further editing.
+     *
+     * This is the same as calling `tilemap.cache();`
+     *
+     * @param {Tilemap} tilemap The tilemap which needs to be cached.
+     * @param {number} chunkSize The size of one chunk.
+     */
+    cache(tilemap, chunkSize) {
+        tilemap.cache(chunkSize);
+    },
+    /**
+     * Enables caching on this tileset, freezing it and turning it
+     * into a series of bitmap textures. This proides great speed boost,
+     * but prevents further editing.
+     *
+     * This version packs tiles into rhombus-shaped chunks, and sorts them
+     * from top to bottom. This fixes seam issues for isometric games.
+     * Note that tiles should be placed on a flat plane for the proper sorting.
+     * If you need an effect of elevation, consider shifting each tile with
+     * tile.pivot.y property.
+     *
+     * This is the same as calling `tilemap.cacheDiamond();`
+     *
+     * @param {Tilemap} tilemap The tilemap which needs to be cached.
+     * @param {number} chunkSize The size of one chunk.
+     */
+    cacheDiamond(tilemap, chunkSize) {
+        tilemap.cacheDiamond(chunkSize);
+    }
+};
+
 /* eslint-disable no-unused-vars */
 /**
  * This class represents a camera that is used by ct.js' cameras.
@@ -4558,6 +5112,22 @@ class Camera extends PIXI.DisplayObject {
     }
 
     /**
+     * Checks whether a given object (or any Pixi's DisplayObject)
+     * is potentially visible, meaning that its bounding box intersects
+     * the camera's bounding box.
+     * @param {PIXI.DisplayObject} copy An object to check for.
+     * @returns {boolean} `true` if an object is visible, `false` otherwise.
+     */
+    contains(copy) {
+        // `true` skips transforms recalculations, boosting performance
+        const bounds = copy.getBounds(true);
+        return bounds.right > 0 &&
+               bounds.left < this.width * this.scale.x &&
+               bounds.bottom > 0 &&
+               bounds.top < this.width * this.scale.y;
+    }
+
+    /**
      * Realigns all the copies in a room so that they distribute proportionally
      * to a new camera size based on their `xstart` and `ystart` coordinates.
      * Will throw an error if the given room is not in UI space (if `room.isUi` is not `true`).
@@ -4716,7 +5286,7 @@ if (!ct.sound) {
 
 (function timerAddon() {
     const ctTimerTime = Symbol('time');
-    const ctTimerRoomName = Symbol('roomName');
+    const ctTimerRoomUid = Symbol('roomUid');
     const ctTimerTimeLeftOriginal = Symbol('timeLeftOriginal');
     const promiseResolve = Symbol('promiseResolve');
     const promiseReject = Symbol('promiseReject');
@@ -4735,7 +5305,7 @@ if (!ct.sound) {
          * if `false`, it will use `ct.delta` for counting time.
          */
         constructor(timeMs, name = false, uiDelta = false) {
-            this[ctTimerRoomName] = ct.room.name || '';
+            this[ctTimerRoomUid] = ct.room.uid || null;
             this.name = name && name.toString();
             this.isUi = uiDelta;
             this[ctTimerTime] = 0;
@@ -4796,7 +5366,7 @@ if (!ct.sound) {
                 return;
             }
             this[ctTimerTime] += this.isUi ? ct.deltaUi : ct.delta;
-            if (ct.room.name !== this[ctTimerRoomName] && this[ctTimerRoomName] !== '') {
+            if (ct.room.uid !== this[ctTimerRoomUid] && this[ctTimerRoomUid] !== null) {
                 this.reject({
                     info: 'Room switch',
                     from: 'ct.timer'
@@ -4817,6 +5387,9 @@ if (!ct.sound) {
          * @returns {void}
          */
         resolve() {
+            if (this.settled) {
+                return;
+            }
             this.done = true;
             this.settled = true;
             this[promiseResolve]();
@@ -4828,6 +5401,9 @@ if (!ct.sound) {
          * @returns {void}
          */
         reject(message) {
+            if (this.settled) {
+                return;
+            }
             this.rejected = true;
             this.settled = true;
             this[promiseReject](message);
