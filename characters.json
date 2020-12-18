@@ -1,0 +1,26 @@
+[
+  {
+    "sex": "man",
+    "name": "Clark Kent",
+    "slack": "https://ssense.slack.com/archives/DDVHQF7R7",
+    "description": "Let's open this yellow door"
+  },
+  {
+    "sex": "man",
+    "name": "Perter Parker",
+    "slack": "https://ssense.slack.com/archives/DDVHQF7R7",
+    "description": "I work as PM"
+  },
+  {
+    "sex": "man",
+    "name": "Bruce Wayne",
+    "slack": "https://ssense.slack.com/archives/DDVHQF7R7",
+    "description": "I work as Software dev"
+  },
+  {
+    "sex": "woman",
+    "name": "Selina Kyle",
+    "slack": "https://ssense.slack.com/archives/DDVHQF7R7",
+    "description": "I work as Software dev"
+  }
+]
